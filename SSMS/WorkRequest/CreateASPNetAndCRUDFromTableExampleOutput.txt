@@ -1,0 +1,1581 @@
+Imports DataBaseHandler
+Imports Microsoft.VisualBasic
+Imports StringFunctionsClass
+Imports System.Data
+Imports System.Data.SqlClient
+Imports System.IO
+Imports UPDB
+ 
+Public Class  WorkRequest
+Inherits UPDB.UPDB_BaseDataClass
+'--'
+'--AUTO-GENERATED WITH SPROC Z:\a_Shared\ASP NET Propert Creator for Class Version VII.sql'
+'--'
+ 
+Dim oStringCleaner As New StringFunctionsClass
+ 
+#Region "COMMENTS_GENERAL_INFO"
+		'<author></author>
+		'<datecreated></datecreated>
+		'<filename></filename>
+		'<appname></appname>
+		'<db></db>
+		'<server></server>
+		'<calledby name="" type="" />
+		'<calls name="" type="" />
+		'<summary></summary>		
+		'<change by="" date=""></change>
+		'<sample>
+		'	<![cdata[ write sample code here: ]]>
+		'</sample>
+		#End Region
+	
+ 
+	
+ Dim _DATA_FOUND As String
+    Public Property DATA_FOUND() As String
+        Get
+            'Return the value of the variable'
+            Return _UICID
+        End Get
+        'Set the value of the variable'
+        Set(ByVal sVal As String)
+            If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+                _DATA_FOUND = oStringCleaner.MustBeProperCharacters(sVal, 1)
+            Else
+                _DATA_FOUND = "N"
+            End If
+        End Set
+    End Property
+
+Dim _AverageRate AS ?
+#Region "COMMENTS_PROPERTY"
+			    '<name>AverageRate</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property AverageRate() AS ?
+    Get 
+         'Return the value of the variable'
+         Return _AverageRate
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As ?) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+ 
+        Else
+             _AverageRate= ""
+        End If
+    End Set
+End Property
+Dim _BranchAssignmentID AS integer
+#Region "COMMENTS_PROPERTY"
+			    '<name>BranchAssignmentID</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property BranchAssignmentID() AS integer
+    Get 
+         'Return the value of the variable'
+         Return _BranchAssignmentID
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As integer) 
+        If sVal > 0 Then
+             _BranchAssignmentID= sVal
+        Else
+             _BranchAssignmentID= 0
+        End If
+    End Set
+End Property
+Dim _CompletionDate AS ?
+#Region "COMMENTS_PROPERTY"
+			    '<name>CompletionDate</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property CompletionDate() AS ?
+    Get 
+         'Return the value of the variable'
+         Return _CompletionDate
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As ?) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+ 
+        Else
+             _CompletionDate= ""
+        End If
+    End Set
+End Property
+Dim _DatePrepared AS ?
+#Region "COMMENTS_PROPERTY"
+			    '<name>DatePrepared</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property DatePrepared() AS ?
+    Get 
+         'Return the value of the variable'
+         Return _DatePrepared
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As ?) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+ 
+        Else
+             _DatePrepared= ""
+        End If
+    End Set
+End Property
+Dim _Documents AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>Documents</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property Documents() AS String
+    Get 
+         'Return the value of the variable'
+         Return _Documents
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _Documents= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _Documents= ""
+        End If
+    End Set
+End Property
+Dim _DocumentsInstr AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>DocumentsInstr</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property DocumentsInstr() AS String
+    Get 
+         'Return the value of the variable'
+         Return _DocumentsInstr
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _DocumentsInstr= oStringCleaner.MustBeProperCharacters(sVal,-1)
+        Else
+             _DocumentsInstr= ""
+        End If
+    End Set
+End Property
+Dim _DocumentsLocation AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>DocumentsLocation</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property DocumentsLocation() AS String
+    Get 
+         'Return the value of the variable'
+         Return _DocumentsLocation
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _DocumentsLocation= oStringCleaner.MustBeProperCharacters(sVal,-1)
+        Else
+             _DocumentsLocation= ""
+        End If
+    End Set
+End Property
+Dim _DraftDueDate AS Date
+#Region "COMMENTS_PROPERTY"
+			    '<name>DraftDueDate</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property DraftDueDate() AS Date
+    Get 
+         'Return the value of the variable'
+         Return _DraftDueDate
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As Date) 
+        If sVal > "01-JAN-1900" Then
+             _DraftDueDate= sVal
+        Else
+             _DraftDueDate= "01-JAN-1900"
+        End If
+    End Set
+End Property
+Dim _DrChecks AS ?
+#Region "COMMENTS_PROPERTY"
+			    '<name>DrChecks</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property DrChecks() AS ?
+    Get 
+         'Return the value of the variable'
+         Return _DrChecks
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As ?) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+ 
+        Else
+             _DrChecks= ""
+        End If
+    End Set
+End Property
+Dim _ECESSubmissionDate AS Date
+#Region "COMMENTS_PROPERTY"
+			    '<name>ECESSubmissionDate</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property ECESSubmissionDate() AS Date
+    Get 
+         'Return the value of the variable'
+         Return _ECESSubmissionDate
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As Date) 
+        If sVal > "01-JAN-1900" Then
+             _ECESSubmissionDate= sVal
+        Else
+             _ECESSubmissionDate= "01-JAN-1900"
+        End If
+    End Set
+End Property
+Dim _ID AS integer
+#Region "COMMENTS_PROPERTY"
+			    '<name>ID</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property ID() AS integer
+    Get 
+         'Return the value of the variable'
+         Return _ID
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As integer) 
+        If sVal > 0 Then
+             _ID= sVal
+        Else
+             _ID= 0
+        End If
+    End Set
+End Property
+Dim _OtherDisciplines AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>OtherDisciplines</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property OtherDisciplines() AS String
+    Get 
+         'Return the value of the variable'
+         Return _OtherDisciplines
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _OtherDisciplines= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _OtherDisciplines= ""
+        End If
+    End Set
+End Property
+Dim _PMSharePointGroupID AS integer
+#Region "COMMENTS_PROPERTY"
+			    '<name>PMSharePointGroupID</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property PMSharePointGroupID() AS integer
+    Get 
+         'Return the value of the variable'
+         Return _PMSharePointGroupID
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As integer) 
+        If sVal > 0 Then
+             _PMSharePointGroupID= sVal
+        Else
+             _PMSharePointGroupID= 0
+        End If
+    End Set
+End Property
+Dim _PreviousWRID AS integer
+#Region "COMMENTS_PROPERTY"
+			    '<name>PreviousWRID</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property PreviousWRID() AS integer
+    Get 
+         'Return the value of the variable'
+         Return _PreviousWRID
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As integer) 
+        If sVal > 0 Then
+             _PreviousWRID= sVal
+        Else
+             _PreviousWRID= 0
+        End If
+    End Set
+End Property
+Dim _ProjectInfoID AS integer
+#Region "COMMENTS_PROPERTY"
+			    '<name>ProjectInfoID</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property ProjectInfoID() AS integer
+    Get 
+         'Return the value of the variable'
+         Return _ProjectInfoID
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As integer) 
+        If sVal > 0 Then
+             _ProjectInfoID= sVal
+        Else
+             _ProjectInfoID= 0
+        End If
+    End Set
+End Property
+Dim _ProjectManager AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>ProjectManager</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property ProjectManager() AS String
+    Get 
+         'Return the value of the variable'
+         Return _ProjectManager
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _ProjectManager= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _ProjectManager= ""
+        End If
+    End Set
+End Property
+Dim _ProjectManagerDisplayName AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>ProjectManagerDisplayName</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property ProjectManagerDisplayName() AS String
+    Get 
+         'Return the value of the variable'
+         Return _ProjectManagerDisplayName
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _ProjectManagerDisplayName= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _ProjectManagerDisplayName= ""
+        End If
+    End Set
+End Property
+Dim _ProjectManagerEmail AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>ProjectManagerEmail</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property ProjectManagerEmail() AS String
+    Get 
+         'Return the value of the variable'
+         Return _ProjectManagerEmail
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _ProjectManagerEmail= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _ProjectManagerEmail= ""
+        End If
+    End Set
+End Property
+Dim _ProjectManagerPhone AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>ProjectManagerPhone</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property ProjectManagerPhone() AS String
+    Get 
+         'Return the value of the variable'
+         Return _ProjectManagerPhone
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _ProjectManagerPhone= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _ProjectManagerPhone= ""
+        End If
+    End Set
+End Property
+Dim _RequestedFor AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>RequestedFor</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RequestedFor() AS String
+    Get 
+         'Return the value of the variable'
+         Return _RequestedFor
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _RequestedFor= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _RequestedFor= ""
+        End If
+    End Set
+End Property
+Dim _RequestedForDisplayName AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>RequestedForDisplayName</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RequestedForDisplayName() AS String
+    Get 
+         'Return the value of the variable'
+         Return _RequestedForDisplayName
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _RequestedForDisplayName= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _RequestedForDisplayName= ""
+        End If
+    End Set
+End Property
+Dim _RequestedForEmail AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>RequestedForEmail</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RequestedForEmail() AS String
+    Get 
+         'Return the value of the variable'
+         Return _RequestedForEmail
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _RequestedForEmail= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _RequestedForEmail= ""
+        End If
+    End Set
+End Property
+Dim _RequestedForPhone AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>RequestedForPhone</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RequestedForPhone() AS String
+    Get 
+         'Return the value of the variable'
+         Return _RequestedForPhone
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _RequestedForPhone= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _RequestedForPhone= ""
+        End If
+    End Set
+End Property
+Dim _Requestor AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>Requestor</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property Requestor() AS String
+    Get 
+         'Return the value of the variable'
+         Return _Requestor
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _Requestor= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _Requestor= ""
+        End If
+    End Set
+End Property
+Dim _RequestorDisplayName AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>RequestorDisplayName</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RequestorDisplayName() AS String
+    Get 
+         'Return the value of the variable'
+         Return _RequestorDisplayName
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _RequestorDisplayName= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _RequestorDisplayName= ""
+        End If
+    End Set
+End Property
+Dim _RequestorEmail AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>RequestorEmail</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RequestorEmail() AS String
+    Get 
+         'Return the value of the variable'
+         Return _RequestorEmail
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _RequestorEmail= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _RequestorEmail= ""
+        End If
+    End Set
+End Property
+Dim _RequestorPhone AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>RequestorPhone</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RequestorPhone() AS String
+    Get 
+         'Return the value of the variable'
+         Return _RequestorPhone
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _RequestorPhone= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _RequestorPhone= ""
+        End If
+    End Set
+End Property
+Dim _RowVersion AS ?
+#Region "COMMENTS_PROPERTY"
+			    '<name>RowVersion</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property RowVersion() AS ?
+    Get 
+         'Return the value of the variable'
+         Return _RowVersion
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As ?) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+ 
+        Else
+             _RowVersion= ""
+        End If
+    End Set
+End Property
+Dim _SpecificAssignmentInfo AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>SpecificAssignmentInfo</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property SpecificAssignmentInfo() AS String
+    Get 
+         'Return the value of the variable'
+         Return _SpecificAssignmentInfo
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _SpecificAssignmentInfo= oStringCleaner.MustBeProperCharacters(sVal,-1)
+        Else
+             _SpecificAssignmentInfo= ""
+        End If
+    End Set
+End Property
+Dim _SpecificCostDistrInfo AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>SpecificCostDistrInfo</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property SpecificCostDistrInfo() AS String
+    Get 
+         'Return the value of the variable'
+         Return _SpecificCostDistrInfo
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _SpecificCostDistrInfo= oStringCleaner.MustBeProperCharacters(sVal,-1)
+        Else
+             _SpecificCostDistrInfo= ""
+        End If
+    End Set
+End Property
+Dim _StartDate AS ?
+#Region "COMMENTS_PROPERTY"
+			    '<name>StartDate</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property StartDate() AS ?
+    Get 
+         'Return the value of the variable'
+         Return _StartDate
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As ?) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+ 
+        Else
+             _StartDate= ""
+        End If
+    End Set
+End Property
+Dim _SubmissionDate AS ?
+#Region "COMMENTS_PROPERTY"
+			    '<name>SubmissionDate</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property SubmissionDate() AS ?
+    Get 
+         'Return the value of the variable'
+         Return _SubmissionDate
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As ?) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+ 
+        Else
+             _SubmissionDate= ""
+        End If
+    End Set
+End Property
+Dim _Supervisor AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>Supervisor</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property Supervisor() AS String
+    Get 
+         'Return the value of the variable'
+         Return _Supervisor
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _Supervisor= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _Supervisor= ""
+        End If
+    End Set
+End Property
+Dim _SupervisorDisplayName AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>SupervisorDisplayName</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property SupervisorDisplayName() AS String
+    Get 
+         'Return the value of the variable'
+         Return _SupervisorDisplayName
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _SupervisorDisplayName= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _SupervisorDisplayName= ""
+        End If
+    End Set
+End Property
+Dim _SupervisorEmail AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>SupervisorEmail</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property SupervisorEmail() AS String
+    Get 
+         'Return the value of the variable'
+         Return _SupervisorEmail
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _SupervisorEmail= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _SupervisorEmail= ""
+        End If
+    End Set
+End Property
+Dim _SupervisorPhone AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>SupervisorPhone</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property SupervisorPhone() AS String
+    Get 
+         'Return the value of the variable'
+         Return _SupervisorPhone
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _SupervisorPhone= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _SupervisorPhone= ""
+        End If
+    End Set
+End Property
+Dim _SupervisorSharePointGroupID AS integer
+#Region "COMMENTS_PROPERTY"
+			    '<name>SupervisorSharePointGroupID</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property SupervisorSharePointGroupID() AS integer
+    Get 
+         'Return the value of the variable'
+         Return _SupervisorSharePointGroupID
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As integer) 
+        If sVal > 0 Then
+             _SupervisorSharePointGroupID= sVal
+        Else
+             _SupervisorSharePointGroupID= 0
+        End If
+    End Set
+End Property
+Dim _WRNumber AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>WRNumber</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property WRNumber() AS String
+    Get 
+         'Return the value of the variable'
+         Return _WRNumber
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _WRNumber= oStringCleaner.MustBeProperCharacters(sVal,255)
+        Else
+             _WRNumber= ""
+        End If
+    End Set
+End Property
+Dim _WRStatusID AS integer
+#Region "COMMENTS_PROPERTY"
+			    '<name>WRStatusID</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property WRStatusID() AS integer
+    Get 
+         'Return the value of the variable'
+         Return _WRStatusID
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As integer) 
+        If sVal > 0 Then
+             _WRStatusID= sVal
+        Else
+             _WRStatusID= 0
+        End If
+    End Set
+End Property
+Dim _WRUrl AS String
+#Region "COMMENTS_PROPERTY"
+			    '<name>WRUrl</name>
+			    '<returns></returns>
+			    '<private_name type=""></private_name>
+			    '<summary>Property name mirrors column name in the Entity Table</summary>	
+			    #End Region
+Public Property WRUrl() AS String
+    Get 
+         'Return the value of the variable'
+         Return _WRUrl
+    End Get 
+    'Set the value of the variable'
+    Set(ByVal sVal As String) 
+        If Not sVal Is DBNull.Value And Len(Trim(sVal)) > 0 Then
+             _WRUrl= oStringCleaner.MustBeProperCharacters(sVal,-1)
+        Else
+             _WRUrl= ""
+        End If
+    End Set
+End Property
+ 
+#Region "COMMENTS_METHOD"
+	' <name>PopulateClassData</name>
+    	' <returns>VOID</returns>--required for functions only
+    	' <summary>
+    	'	This public-facing Sub can be called from an aspx.vb page in a Web applicaiton.
+    	'	The PopulateClassData sub call the private sub PopulateData to accomlish this
+    	' </summary>
+    	' <param name="ParameterName" type="String">
+    	'	  <ref_type>ByValue</ref_type>
+    	'	  <required>Yes</required>
+    	'	  <summary>
+    	'		The parameter passed to PopulateClassData
+	'		is a value that uniquely identifies the 
+	'		entity in the data table
+    	'	   </summary>
+    	' </param>
+	#End Region
+ Public Sub PopulateClassData(ByVal ID As INT)
+        PopulateData(ID)
+ End Sub
+#Region "COMMENTS_METHOD"
+	' <name>PopulateData</name>
+    	' <returns>VOID</returns>--required for functions only
+    	' <summary>
+    	'	PopulateData retrieves data from the entity table and populates
+    	'	the properties IN the instantiated class.
+    	'	An important concept used in this sub is that
+    	'	SqlCommand object AND the SqlCommand objects paramaters
+    	'	are defined within Sub PopulateData. The SqlCommand object is then
+    	'	sent to a generic Data Base handler (another class that manages 
+    	'	connecting to AND retrieving data FROM the SQL server) FUNCTION called
+    	'	ExecuteSqlCommand that takes OVER the task OF making the CONNECTION TO the
+    	'	DATABASE AND returing a record SET TO Sub PopulateData 
+    	'</summary>
+    	' <param name="ParameterName" type="String">
+    	'	  <ref_type>ByValue</ref_type>
+    	'	  <required>Yes</required>
+    	'	  <summary>
+   	'		The parameter passed to PopulateClassData
+	'		is a value that uniquely identifies the 
+	'		entity in the data table
+    	'	  </summary>
+    	' </param>
+	#End Region
+ Private Sub PopulateData(ByVal ID As INT)
+ 
+	Dim oDatabaseHandler As New DataBaseHandler
+	Dim oReader As SqlDataReader = Nothing
+	Dim oSqlCom As New SqlCommand
+ 
+Try
+ oSqlCom.CommandType = CommandType.StoredProcedure
+ oSqlCom.CommandText = "WorkRequest_R"
+'--Set proper values for the SQL SPROC input parameter here!
+	oSqlCom.Parameters.Add("@ID", SqlDbType.VarChar, 0).Value = ID.ToString
+oReader = oDatabaseHandler.ExecuteSqlCommand(oSqlCom)'--(oSqlCom, [Optional] ServerName,[Optional] Databasename)
+ 
+	Me.DATA_FOUND = "N"
+	If (oReader.HasRows And oReader.Read) Then
+		Me.DATA_FOUND = "Y"
+		Me.AverageRate=oReader("AverageRate")
+		Me.BranchAssignmentID=oReader("BranchAssignmentID")
+		Me.CompletionDate=oReader("CompletionDate")
+		Me.DatePrepared=oReader("DatePrepared")
+		Me.Documents=oReader("Documents").ToString
+		Me.DocumentsInstr=oReader("DocumentsInstr").ToString
+		Me.DocumentsLocation=oReader("DocumentsLocation").ToString
+		Me.DraftDueDate=oReader("DraftDueDate")
+		Me.DrChecks=oReader("DrChecks")
+		Me.ECESSubmissionDate=oReader("ECESSubmissionDate")
+		Me.ID=oReader("ID")
+		Me.OtherDisciplines=oReader("OtherDisciplines").ToString
+		Me.PMSharePointGroupID=oReader("PMSharePointGroupID")
+		Me.PreviousWRID=oReader("PreviousWRID")
+		Me.ProjectInfoID=oReader("ProjectInfoID")
+		Me.ProjectManager=oReader("ProjectManager").ToString
+		Me.ProjectManagerDisplayName=oReader("ProjectManagerDisplayName").ToString
+		Me.ProjectManagerEmail=oReader("ProjectManagerEmail").ToString
+		Me.ProjectManagerPhone=oReader("ProjectManagerPhone").ToString
+		Me.RequestedFor=oReader("RequestedFor").ToString
+		Me.RequestedForDisplayName=oReader("RequestedForDisplayName").ToString
+		Me.RequestedForEmail=oReader("RequestedForEmail").ToString
+		Me.RequestedForPhone=oReader("RequestedForPhone").ToString
+		Me.Requestor=oReader("Requestor").ToString
+		Me.RequestorDisplayName=oReader("RequestorDisplayName").ToString
+		Me.RequestorEmail=oReader("RequestorEmail").ToString
+		Me.RequestorPhone=oReader("RequestorPhone").ToString
+		Me.RowVersion=oReader("RowVersion")
+		Me.SpecificAssignmentInfo=oReader("SpecificAssignmentInfo").ToString
+		Me.SpecificCostDistrInfo=oReader("SpecificCostDistrInfo").ToString
+		Me.StartDate=oReader("StartDate")
+		Me.SubmissionDate=oReader("SubmissionDate")
+		Me.Supervisor=oReader("Supervisor").ToString
+		Me.SupervisorDisplayName=oReader("SupervisorDisplayName").ToString
+		Me.SupervisorEmail=oReader("SupervisorEmail").ToString
+		Me.SupervisorPhone=oReader("SupervisorPhone").ToString
+		Me.SupervisorSharePointGroupID=oReader("SupervisorSharePointGroupID")
+		Me.WRNumber=oReader("WRNumber").ToString
+		Me.WRStatusID=oReader("WRStatusID")
+		Me.WRUrl=oReader("WRUrl").ToString
+ 
+		Else
+	
+		Me.DATA_FOUND = "N"
+	--AverageRate | DECIMAL
+		ME.BranchAssignmentID= 0
+	--CompletionDate | DATETIME2
+	--DatePrepared | DATETIME2
+		ME.Documents= ""
+		ME.DocumentsInstr= ""
+		ME.DocumentsLocation= ""
+		ME.DraftDueDate= "01-JAN-1900"
+	--DrChecks | BIT
+		ME.ECESSubmissionDate= "01-JAN-1900"
+		ME.ID= 0
+		ME.OtherDisciplines= ""
+		ME.PMSharePointGroupID= 0
+		ME.PreviousWRID= 0
+		ME.ProjectInfoID= 0
+		ME.ProjectManager= ""
+		ME.ProjectManagerDisplayName= ""
+		ME.ProjectManagerEmail= ""
+		ME.ProjectManagerPhone= ""
+		ME.RequestedFor= ""
+		ME.RequestedForDisplayName= ""
+		ME.RequestedForEmail= ""
+		ME.RequestedForPhone= ""
+		ME.Requestor= ""
+		ME.RequestorDisplayName= ""
+		ME.RequestorEmail= ""
+		ME.RequestorPhone= ""
+	--RowVersion | TIMESTAMP
+		ME.SpecificAssignmentInfo= ""
+		ME.SpecificCostDistrInfo= ""
+	--StartDate | DATETIME2
+	--SubmissionDate | DATETIME2
+		ME.Supervisor= ""
+		ME.SupervisorDisplayName= ""
+		ME.SupervisorEmail= ""
+		ME.SupervisorPhone= ""
+		ME.SupervisorSharePointGroupID= 0
+		ME.WRNumber= ""
+		ME.WRStatusID= 0
+		ME.WRUrl= ""
+	End If
+ 
+ 
+ 
+       Catch ex As System.Exception
+            Dim txtErrorString As New StringBuilder
+            With txtErrorString
+                .Append("Error Getting Service Data") 
+                .Append(vbLf)
+                .Append(vbLf)
+            End With
+ 
+            Dim txtError As String = txtErrorString.ToString
+            Dim txtAdminMessage As String = ""
+            txtAdminMessage = ("Souce: " & HttpContext.Current.Request.RawUrl.ToString & vbLf)
+            txtAdminMessage = txtAdminMessage & ("Error In: " & HttpContext.Current.Request.Url.ToString & vbLf)
+            txtAdminMessage = txtAdminMessage & ("Error Message: " & ex.Message.ToString & vbLf)
+            txtAdminMessage = txtAdminMessage & ("Stack Trace: " & ex.StackTrace.ToString & vbLf)
+            HttpContext.Current.Server.Transfer("ErrorNotification.aspx?txtError=" & txtError & "&txtAdminMessage=" & txtAdminMessage)
+        End Try
+End Sub
+ 
+#Region "COMMENTS_METHOD"
+	' <name>UpdateClassTables</name>
+    	' <returns>VOID</returns>--required for functions only
+    	' <summary>
+    	'	This public-facing sub is called from the aspx.vb page. 
+    	'      UpdateClassTables calls UpdateClassTables which updates 
+    	'	data in the entity table
+    	'</summary>    	
+    	' <param name="oData" type="String">
+    	'	  <ref_type>ByValue</ref_type>
+    	'	  <required>Yes</required>
+    	'	  <summary>An instance of the entity class</summary>
+    	' </param>
+	#End Region
+ Public Sub UpdateClassTables(ByVal oData As WorkRequest)
+        UpdateTables(oData)
+ End Sub
+#Region "COMMENTS_METHOD"
+	' <name>MethodName</name>
+    	' <returns>VOID</returns>--required for functions only
+    	' <summary>
+    	'      UpdateClassTables which updates data in the entity table
+    	'	An important concept used in this sub is that
+    	'	SqlCommand object AND the SqlCommand objects paramaters
+    	'	are defined within Sub UpdateClassTables. The SqlCommand object is then
+    	'	sent to a generic Data Base handler (another class that manages 
+    	'	connecting to AND retrieving data FROM the SQL server) FUNCTION called
+    	'	ExecuteSqlCommand that takes OVER the task OF making the CONNECTION TO the
+    	'	DATABASE AND performing the required action 
+    	'</summary>    	
+    	' <param name="oData" type="String">
+    	'	  <ref_type>ByValue</ref_type>
+    	'	  <required>Yes</required>
+    	'	  <summary>An instance of the entity class</summary>
+    	' </param>
+	#End Region
+ Private Sub UpdateTables(ByVal oData As WorkRequest)
+ 
+	Dim oDatabaseHandler As New DataBaseHandler
+	'--oReader is used to return a process result message from the update procedure
+	Dim oReader As SqlDataReader = Nothing
+ 
+	Dim oSqlCom As New SqlCommand
+ oSqlCom.CommandType = CommandType.StoredProcedure
+ oSqlCom.CommandText = "uspWorkRequest_CRUD"
+ 
+Try
+	oSqlCom.Parameters.Add("@AverageRate", SqlDbType.decimal).Value = oData.AverageRate
+	oSqlCom.Parameters.Add("@BranchAssignmentID", SqlDbType.int).Value = oData.BranchAssignmentID
+	oSqlCom.Parameters.Add("@CompletionDate", SqlDbType.datetime2).Value = oData.CompletionDate
+	oSqlCom.Parameters.Add("@DatePrepared", SqlDbType.datetime2).Value = oData.DatePrepared
+	oSqlCom.Parameters.Add("@Documents", SqlDbType.VarChar, 255).Value = oData.Documents.ToString
+	oSqlCom.Parameters.Add("@DocumentsInstr", SqlDbType.VarChar, -1).Value = oData.DocumentsInstr.ToString
+	oSqlCom.Parameters.Add("@DocumentsLocation", SqlDbType.VarChar, -1).Value = oData.DocumentsLocation.ToString
+	oSqlCom.Parameters.Add("@DraftDueDate", SqlDbType.datetime).Value = oData.DraftDueDate
+	oSqlCom.Parameters.Add("@DrChecks", SqlDbType.bit).Value = oData.DrChecks
+	oSqlCom.Parameters.Add("@ECESSubmissionDate", SqlDbType.datetime).Value = oData.ECESSubmissionDate
+	oSqlCom.Parameters.Add("@ID", SqlDbType.int).Value = oData.ID
+	oSqlCom.Parameters.Add("@OtherDisciplines", SqlDbType.VarChar, 255).Value = oData.OtherDisciplines.ToString
+	oSqlCom.Parameters.Add("@PMSharePointGroupID", SqlDbType.int).Value = oData.PMSharePointGroupID
+	oSqlCom.Parameters.Add("@PreviousWRID", SqlDbType.int).Value = oData.PreviousWRID
+	oSqlCom.Parameters.Add("@ProjectInfoID", SqlDbType.int).Value = oData.ProjectInfoID
+	oSqlCom.Parameters.Add("@ProjectManager", SqlDbType.VarChar, 255).Value = oData.ProjectManager.ToString
+	oSqlCom.Parameters.Add("@ProjectManagerDisplayName", SqlDbType.VarChar, 255).Value = oData.ProjectManagerDisplayName.ToString
+	oSqlCom.Parameters.Add("@ProjectManagerEmail", SqlDbType.VarChar, 255).Value = oData.ProjectManagerEmail.ToString
+	oSqlCom.Parameters.Add("@ProjectManagerPhone", SqlDbType.VarChar, 255).Value = oData.ProjectManagerPhone.ToString
+	oSqlCom.Parameters.Add("@RequestedFor", SqlDbType.VarChar, 255).Value = oData.RequestedFor.ToString
+	oSqlCom.Parameters.Add("@RequestedForDisplayName", SqlDbType.VarChar, 255).Value = oData.RequestedForDisplayName.ToString
+	oSqlCom.Parameters.Add("@RequestedForEmail", SqlDbType.VarChar, 255).Value = oData.RequestedForEmail.ToString
+	oSqlCom.Parameters.Add("@RequestedForPhone", SqlDbType.VarChar, 255).Value = oData.RequestedForPhone.ToString
+	oSqlCom.Parameters.Add("@Requestor", SqlDbType.VarChar, 255).Value = oData.Requestor.ToString
+	oSqlCom.Parameters.Add("@RequestorDisplayName", SqlDbType.VarChar, 255).Value = oData.RequestorDisplayName.ToString
+	oSqlCom.Parameters.Add("@RequestorEmail", SqlDbType.VarChar, 255).Value = oData.RequestorEmail.ToString
+	oSqlCom.Parameters.Add("@RequestorPhone", SqlDbType.VarChar, 255).Value = oData.RequestorPhone.ToString
+	oSqlCom.Parameters.Add("@RowVersion", SqlDbType.timestamp).Value = oData.RowVersion
+	oSqlCom.Parameters.Add("@SpecificAssignmentInfo", SqlDbType.VarChar, -1).Value = oData.SpecificAssignmentInfo.ToString
+	oSqlCom.Parameters.Add("@SpecificCostDistrInfo", SqlDbType.VarChar, -1).Value = oData.SpecificCostDistrInfo.ToString
+	oSqlCom.Parameters.Add("@StartDate", SqlDbType.datetime2).Value = oData.StartDate
+	oSqlCom.Parameters.Add("@SubmissionDate", SqlDbType.datetime2).Value = oData.SubmissionDate
+	oSqlCom.Parameters.Add("@Supervisor", SqlDbType.VarChar, 255).Value = oData.Supervisor.ToString
+	oSqlCom.Parameters.Add("@SupervisorDisplayName", SqlDbType.VarChar, 255).Value = oData.SupervisorDisplayName.ToString
+	oSqlCom.Parameters.Add("@SupervisorEmail", SqlDbType.VarChar, 255).Value = oData.SupervisorEmail.ToString
+	oSqlCom.Parameters.Add("@SupervisorPhone", SqlDbType.VarChar, 255).Value = oData.SupervisorPhone.ToString
+	oSqlCom.Parameters.Add("@SupervisorSharePointGroupID", SqlDbType.int).Value = oData.SupervisorSharePointGroupID
+	oSqlCom.Parameters.Add("@WRNumber", SqlDbType.VarChar, 255).Value = oData.WRNumber.ToString
+	oSqlCom.Parameters.Add("@WRStatusID", SqlDbType.int).Value = oData.WRStatusID
+	oSqlCom.Parameters.Add("@WRUrl", SqlDbType.VarChar, -1).Value = oData.WRUrl.ToString
+			oReader = oDatabaseHandler.ExecuteSqlCommand(oSqlCom)'--(oSqlCom, [Optional] ServerName,[Optional] Databasename)
+ 
+'*************************************************************************************************************
+            '***Put the following two functions in your database handler class***
+            'Private Function DbConnection(Optional ByVal txtOptionalServer As String = "", _
+            '                                 Optional ByVal txtOptionalDatabase As String = "") As SqlConnection
+
+            '    Dim MyConnection As New SqlConnection
+            '    Dim txtServer As String = ""
+            '   Dim txtDatabase As String = ""
+
+            '    If txtOptionalServer = "" Then
+            '--Set in Web.Config in  <appSettings> section; e.g., <add key="DEFAULT_SERVER" value="UPDB_DEV_SQL"/>
+            '       txtServer = ConfigurationManager.AppSettings("DEFAULT_SERVER") 
+
+            '    Else
+            '        txtServer = txtOptionalServer
+            '    End If
+
+            '    If txtOptionalDatabase = "" Then
+            '--Set in Web.Config in  <appSettings> section; e.g., <add key="DEFAULT_DB" value="PORTAL"/>
+            '        txtDatabase = ConfigurationManager.AppSettings("DEFAULT_DB") --SET IN WEB CONFIG
+            '    Else
+            '        txtDatabase = txtOptionalDatabase
+            '   End If
+
+            '    Try
+            '        MyConnection.ConnectionString = ("server=" & txtServer & ";database=" & txtDatabase & ";Trusted_Connection=yes; Pooling=false; Connection Timeout=45")
+
+            '    Catch ex As SystemException
+            '        Throw New Exception(ex.Message.ToString & " | " & " ERROR OCCURRED AT LINE: " & ex.StackTrace.ToString)
+            '    End Try
+
+            '    Return MyConnection
+
+            'End Function
+
+            'Public Function ExecuteSqlCommand(ByVal oSqlCom As SqlCommand, _
+            '                                        Optional ByVal strServer As String = "", _
+            '                                        Optional ByVal strDatabase As String = "") As SqlDataReader
+
+            '--Paramaters for the receiving SPROC are set in the calling function/class and passed as part of the SqlCommand Object
+            '    Dim oSqlConn As New SqlConnection
+            '    Dim oReader As SqlDataReader = Nothing
+
+            '    Try
+            '        oSqlConn = DbConnection(strServer, strDatabase)
+            '        oSqlCom.Connection = oSqlConn
+
+            '        oSqlConn.Open()
+            '        oReader = oSqlCom.ExecuteReader(System.Data.CommandBehavior.CloseConnection)
+
+
+            '    Catch ex As SystemException
+            '        Throw New Exception(ex.Message.ToString & " | " & " ERROR OCCURRED AT LINE: " & ex.StackTrace.ToString)
+            '    End Try
+            '    Return oReader
+
+            'End Function
+            '*************************************************************************************************************
+ 
+       Catch ex As System.Exception
+            Dim txtErrorString As New StringBuilder
+            With txtErrorString
+                .Append("Error Updating Servcie Data") 
+                .Append(vbLf)
+                .Append(vbLf)
+            End With
+ 
+            Dim txtError As String = txtErrorString.ToString
+            Dim txtAdminMessage As String = ""
+            txtAdminMessage = ("Souce: " & HttpContext.Current.Request.RawUrl.ToString & vbLf)
+            txtAdminMessage = txtAdminMessage & ("Error In: " & HttpContext.Current.Request.Url.ToString & vbLf)
+            txtAdminMessage = txtAdminMessage & ("Error Message: " & ex.Message.ToString & vbLf)
+            txtAdminMessage = txtAdminMessage & ("Stack Trace: " & ex.StackTrace.ToString & vbLf)
+            HttpContext.Current.Server.Transfer("ErrorNotification.aspx?txtError=" & txtError & "&txtAdminMessage=" & txtAdminMessage)
+        End Try
+End Sub
+ 
+ 
+'**************************START CREATE FRAMEWORK FOR SQL STORED PROCEDURE TO UPDATE TABLE(S)*************************************************
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+CREATE  PROCEDURE uspWorkRequest_CRUD
+		(
+	@AverageRate DECIMAL,
+	@BranchAssignmentID INT,
+	@CompletionDate DATETIME2,
+	@DatePrepared DATETIME2,
+	@Documents VARCHAR(255),
+	@DocumentsInstr VARCHAR(-1),
+	@DocumentsLocation VARCHAR(-1),
+	@DraftDueDate DATETIME,
+	@DrChecks BIT,
+	@ECESSubmissionDate DATETIME,
+	@ID INT,
+	@OtherDisciplines VARCHAR(255),
+	@PMSharePointGroupID INT,
+	@PreviousWRID INT,
+	@ProjectInfoID INT,
+	@ProjectManager VARCHAR(255),
+	@ProjectManagerDisplayName VARCHAR(255),
+	@ProjectManagerEmail VARCHAR(255),
+	@ProjectManagerPhone VARCHAR(255),
+	@RequestedFor VARCHAR(255),
+	@RequestedForDisplayName VARCHAR(255),
+	@RequestedForEmail VARCHAR(255),
+	@RequestedForPhone VARCHAR(255),
+	@Requestor VARCHAR(255),
+	@RequestorDisplayName VARCHAR(255),
+	@RequestorEmail VARCHAR(255),
+	@RequestorPhone VARCHAR(255),
+	@RowVersion TIMESTAMP,
+	@SpecificAssignmentInfo VARCHAR(-1),
+	@SpecificCostDistrInfo VARCHAR(-1),
+	@StartDate DATETIME2,
+	@SubmissionDate DATETIME2,
+	@Supervisor VARCHAR(255),
+	@SupervisorDisplayName VARCHAR(255),
+	@SupervisorEmail VARCHAR(255),
+	@SupervisorPhone VARCHAR(255),
+	@SupervisorSharePointGroupID INT,
+	@WRNumber VARCHAR(255),
+	@WRStatusID INT,
+	@WRUrl VARCHAR(-1),
+	)
+ 
+AS
+ 
+
+-- =============================================
+-- Author:		MUCHACHOLAPTOP\dave_
+-- Create date: 2021/11/12
+-- Description:	Shreds an XML document to relational table intended to Create, Update, or Delete rows in 'WorkRequest'
+-- After running do the following: 
+-- INSERT fixes:
+-- 1. Replace TABLE with the ID of the target table in entire procedure
+-- 2. Remove comma after the last column in the CREATE Table statement
+-- 3. Remove <sql_system_user> from last_update_date BY_WHO as appropriate from test data/ SELECT in INSERT. 
+-- 4. Remove all computed columns from the CREATE/INSERT/SELECT statements and test XML
+-- 5. Remove the TABLE_ID Column from the CREATE/INSERT/SELECT statements
+-- 6. Set correct dates/non nulls in test data. Remove all other bugs I wasn't smart enough TO find
+-- UPDATE fixes:
+-- 1. Replace TABLE_ID with ID of target table
+-- 2. Remove comma after the last column in the SET column list.
+-- 3. PROD.LAST_UDPATE_DATE = GETDATE(), SQL_SYSTEM_USER = SYSTEM_USER, BY_WHO= @BY_WHO
+-- 4. Remove the update to the TABLE_ID
+-- DELETE fixes:
+-- =============================================
+--START CODE HERE--
+DECLARE @TYPE_ACTION VARCHAR(25)
+SET @TYPE_ACTION='UPDATE'
+ 
+ 
+IF @TYPE_ACTION='UPDATE'
+BEGIN
+	UPDATE WorkRequest
+	SET 
+		AverageRate = @AverageRate,
+		BranchAssignmentID = @BranchAssignmentID,
+		CompletionDate = @CompletionDate,
+		DatePrepared = @DatePrepared,
+		Documents = @Documents,
+		DocumentsInstr = @DocumentsInstr,
+		DocumentsLocation = @DocumentsLocation,
+		DraftDueDate = @DraftDueDate,
+		DrChecks = @DrChecks,
+		ECESSubmissionDate = @ECESSubmissionDate,
+		ID = @ID,
+		OtherDisciplines = @OtherDisciplines,
+		PMSharePointGroupID = @PMSharePointGroupID,
+		PreviousWRID = @PreviousWRID,
+		ProjectInfoID = @ProjectInfoID,
+		ProjectManager = @ProjectManager,
+		ProjectManagerDisplayName = @ProjectManagerDisplayName,
+		ProjectManagerEmail = @ProjectManagerEmail,
+		ProjectManagerPhone = @ProjectManagerPhone,
+		RequestedFor = @RequestedFor,
+		RequestedForDisplayName = @RequestedForDisplayName,
+		RequestedForEmail = @RequestedForEmail,
+		RequestedForPhone = @RequestedForPhone,
+		Requestor = @Requestor,
+		RequestorDisplayName = @RequestorDisplayName,
+		RequestorEmail = @RequestorEmail,
+		RequestorPhone = @RequestorPhone,
+		RowVersion = @RowVersion,
+		SpecificAssignmentInfo = @SpecificAssignmentInfo,
+		SpecificCostDistrInfo = @SpecificCostDistrInfo,
+		StartDate = @StartDate,
+		SubmissionDate = @SubmissionDate,
+		Supervisor = @Supervisor,
+		SupervisorDisplayName = @SupervisorDisplayName,
+		SupervisorEmail = @SupervisorEmail,
+		SupervisorPhone = @SupervisorPhone,
+		SupervisorSharePointGroupID = @SupervisorSharePointGroupID,
+		WRNumber = @WRNumber,
+		WRStatusID = @WRStatusID,
+		WRUrl = @WRUrl,
+END
+ 
+ 
+IF @TYPE_ACTION='INSERT'
+BEGIN
+	INSERT INTO WorkRequest
+	(
+	AverageRate,
+	BranchAssignmentID,
+	CompletionDate,
+	DatePrepared,
+	Documents,
+	DocumentsInstr,
+	DocumentsLocation,
+	DraftDueDate,
+	DrChecks,
+	ECESSubmissionDate,
+	ID,
+	OtherDisciplines,
+	PMSharePointGroupID,
+	PreviousWRID,
+	ProjectInfoID,
+	ProjectManager,
+	ProjectManagerDisplayName,
+	ProjectManagerEmail,
+	ProjectManagerPhone,
+	RequestedFor,
+	RequestedForDisplayName,
+	RequestedForEmail,
+	RequestedForPhone,
+	Requestor,
+	RequestorDisplayName,
+	RequestorEmail,
+	RequestorPhone,
+	RowVersion,
+	SpecificAssignmentInfo,
+	SpecificCostDistrInfo,
+	StartDate,
+	SubmissionDate,
+	Supervisor,
+	SupervisorDisplayName,
+	SupervisorEmail,
+	SupervisorPhone,
+	SupervisorSharePointGroupID,
+	WRNumber,
+	WRStatusID,
+	WRUrl,
+	)
+SELECT
+	@AverageRate,
+	@BranchAssignmentID,
+	@CompletionDate,
+	@DatePrepared,
+	@Documents,
+	@DocumentsInstr,
+	@DocumentsLocation,
+	@DraftDueDate,
+	@DrChecks,
+	@ECESSubmissionDate,
+	@ID,
+	@OtherDisciplines,
+	@PMSharePointGroupID,
+	@PreviousWRID,
+	@ProjectInfoID,
+	@ProjectManager,
+	@ProjectManagerDisplayName,
+	@ProjectManagerEmail,
+	@ProjectManagerPhone,
+	@RequestedFor,
+	@RequestedForDisplayName,
+	@RequestedForEmail,
+	@RequestedForPhone,
+	@Requestor,
+	@RequestorDisplayName,
+	@RequestorEmail,
+	@RequestorPhone,
+	@RowVersion,
+	@SpecificAssignmentInfo,
+	@SpecificCostDistrInfo,
+	@StartDate,
+	@SubmissionDate,
+	@Supervisor,
+	@SupervisorDisplayName,
+	@SupervisorEmail,
+	@SupervisorPhone,
+	@SupervisorSharePointGroupID,
+	@WRNumber,
+	@WRStatusID,
+	@WRUrl,
+)
+--END CODE HERE--
+ 
+ 
+GRANT  EXECUTE  ON [dbo].[EAS_GET_POC]  TO [WEB_APPUSER]
+GO
+ 
+SET QUOTED_IDENTIFIER OFF
+GO
+SET ANSI_NULLS OFF
+GO
+ 
+ 
+ 
+SET QUOTED_IDENTIFIER ON 
+GO
+SET ANSI_NULLS ON 
+GO
+CREATE  PROCEDURE WorkRequest_R
+	(@ID(VARCHAR(1))
+ 
+AS
+
+	/*	
+	<GENERAL_INFO>
+		<AUTHOR>
+		MUCHACHOLAPTOP\dave_
+		</AUTHOR>
+		<DATECREATED>
+		Nov 12 2021  2:18PM
+		</DATECREATED>
+		<FILENAME>
+		WorkRequest_R
+		</FILENAME>
+		<APPNAME>
+		WorkRequest	
+		</APPNAME>
+		<DB>
+			DATABASE NAME
+		</DB>
+		<CALLEDBY NAME="example.asp" TYPE="ASP" />
+		<CALLS NAME="SQL VIEW EXAMPLE" TYPE="VIEW" />
+		<DESC>
+			PROVIDES METHOD FOR GETTING ENTITY DATA 
+		</DESC>		
+		<!--LIST OF CHANGES SUBMITTED-->
+		<CHANGE BY="" DATE="">
+			<DESC></DESC>
+		</CHANGE>
+	</GENERAL_INFO>
+	*/
+	
+--SELECT COLUMN DATA FOR SPROC READER
+ 
+IF (SELECT COUNT(*) FROM WorkRequest)>0
+BEGIN
+SELECT * FROM WorkRequest
+--AverageRate | decimal
+	ISNULL([WorkRequest].[BranchAssignmentID],0)AS BranchAssignmentID,
+--CompletionDate | datetime2
+--DatePrepared | datetime2
+	ISNULL([WorkRequest].[Documents],'')AS Documents,
+	ISNULL([WorkRequest].[DocumentsInstr],'')AS DocumentsInstr,
+	ISNULL([WorkRequest].[DocumentsLocation],'')AS DocumentsLocation,
+	ISNULL([WorkRequest].[DraftDueDate],'01-JAN-1900')AS DraftDueDate,
+--DrChecks | bit
+	ISNULL([WorkRequest].[ECESSubmissionDate],'01-JAN-1900')AS ECESSubmissionDate,
+	ISNULL([WorkRequest].[ID],0)AS ID,
+	ISNULL([WorkRequest].[OtherDisciplines],'')AS OtherDisciplines,
+	ISNULL([WorkRequest].[PMSharePointGroupID],0)AS PMSharePointGroupID,
+	ISNULL([WorkRequest].[PreviousWRID],0)AS PreviousWRID,
+	ISNULL([WorkRequest].[ProjectInfoID],0)AS ProjectInfoID,
+	ISNULL([WorkRequest].[ProjectManager],'')AS ProjectManager,
+	ISNULL([WorkRequest].[ProjectManagerDisplayName],'')AS ProjectManagerDisplayName,
+	ISNULL([WorkRequest].[ProjectManagerEmail],'')AS ProjectManagerEmail,
+	ISNULL([WorkRequest].[ProjectManagerPhone],'')AS ProjectManagerPhone,
+	ISNULL([WorkRequest].[RequestedFor],'')AS RequestedFor,
+	ISNULL([WorkRequest].[RequestedForDisplayName],'')AS RequestedForDisplayName,
+	ISNULL([WorkRequest].[RequestedForEmail],'')AS RequestedForEmail,
+	ISNULL([WorkRequest].[RequestedForPhone],'')AS RequestedForPhone,
+	ISNULL([WorkRequest].[Requestor],'')AS Requestor,
+	ISNULL([WorkRequest].[RequestorDisplayName],'')AS RequestorDisplayName,
+	ISNULL([WorkRequest].[RequestorEmail],'')AS RequestorEmail,
+	ISNULL([WorkRequest].[RequestorPhone],'')AS RequestorPhone,
+--RowVersion | timestamp
+	ISNULL([WorkRequest].[SpecificAssignmentInfo],'')AS SpecificAssignmentInfo,
+	ISNULL([WorkRequest].[SpecificCostDistrInfo],'')AS SpecificCostDistrInfo,
+--StartDate | datetime2
+--SubmissionDate | datetime2
+	ISNULL([WorkRequest].[Supervisor],'')AS Supervisor,
+	ISNULL([WorkRequest].[SupervisorDisplayName],'')AS SupervisorDisplayName,
+	ISNULL([WorkRequest].[SupervisorEmail],'')AS SupervisorEmail,
+	ISNULL([WorkRequest].[SupervisorPhone],'')AS SupervisorPhone,
+	ISNULL([WorkRequest].[SupervisorSharePointGroupID],0)AS SupervisorSharePointGroupID,
+	ISNULL([WorkRequest].[WRNumber],'')AS WRNumber,
+	ISNULL([WorkRequest].[WRStatusID],0)AS WRStatusID,
+	ISNULL([WorkRequest].[WRUrl],'')AS WRUrl,
+WHERE [IDENTITY COLUMN] = @ID
+END
+ELSE
+BEGIN
+ 
+--USE TO RETURN A ZERO DATA SET IF THE ROW NOT IN SELECTED TABLE - SOMETIMES NEEDED FOR CLASS
+ 
+	SELECT
+--AverageRate | decimal
+	0  AS BranchAssignmentID,
+--CompletionDate | datetime2
+--DatePrepared | datetime2
+	''  AS Documents,
+	''  AS DocumentsInstr,
+	''  AS DocumentsLocation,
+	'01-JAN-1900'  AS DraftDueDate,
+--DrChecks | bit
+	'01-JAN-1900'  AS ECESSubmissionDate,
+	0  AS ID,
+	''  AS OtherDisciplines,
+	0  AS PMSharePointGroupID,
+	0  AS PreviousWRID,
+	0  AS ProjectInfoID,
+	''  AS ProjectManager,
+	''  AS ProjectManagerDisplayName,
+	''  AS ProjectManagerEmail,
+	''  AS ProjectManagerPhone,
+	''  AS RequestedFor,
+	''  AS RequestedForDisplayName,
+	''  AS RequestedForEmail,
+	''  AS RequestedForPhone,
+	''  AS Requestor,
+	''  AS RequestorDisplayName,
+	''  AS RequestorEmail,
+	''  AS RequestorPhone,
+--RowVersion | timestamp
+	''  AS SpecificAssignmentInfo,
+	''  AS SpecificCostDistrInfo,
+--StartDate | datetime2
+--SubmissionDate | datetime2
+	''  AS Supervisor,
+	''  AS SupervisorDisplayName,
+	''  AS SupervisorEmail,
+	''  AS SupervisorPhone,
+	0  AS SupervisorSharePointGroupID,
+	''  AS WRNumber,
+	0  AS WRStatusID,
+	''  AS WRUrl,
+END
+End Class
+
