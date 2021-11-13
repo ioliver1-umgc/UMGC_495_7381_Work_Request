@@ -1,8 +1,12 @@
 # Compiled class file
 *.class
 
-# Log file
+# Log file and Lock
 *.log
+*.lock
+
+# Plugins
+/.plugins/
 
 # BlueJ files
 *.ctxt
