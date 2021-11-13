@@ -14,6 +14,7 @@
 	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-6.2.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Qt/6.2.1"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-6.2-sources.jar">
