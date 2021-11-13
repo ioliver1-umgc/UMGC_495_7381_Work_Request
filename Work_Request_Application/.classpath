@@ -16,5 +16,35 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-6.2-sources.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-charts-6.2.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-charts-6.2-sources.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-charts-native-windows-x64-6.2.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-sql-6.2.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="D:/UMUC Homework/CMSC 495-7381 Current Trends and Projects in Computer Science/My_Work/WorkRequest_Master/UMGC_495_7381_Work_Request/External/qtjambi-sql-6.2-sources.jar">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
