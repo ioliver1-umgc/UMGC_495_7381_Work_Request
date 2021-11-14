@@ -37,18 +37,6 @@
           <AssociatedConnUserName />
           <FullPath>CreateColumnsToClassPropertiesASPNET.sql</FullPath>
         </FileNode>
-        <FileNode Name="WorkRequest_CRUD.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>WorkRequest_CRUD.sql</FullPath>
-        </FileNode>
-        <FileNode Name="WorkRequest_R.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>WorkRequest_R.sql</FullPath>
-        </FileNode>
       </Items>
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
