@@ -19,11 +19,11 @@
     </LogicalFolder>
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
-        <FileNode Name="CreateASPNetAndCRUDFromTable.sql">
+        <FileNode Name="CreateASPNetAndISUDFromTable.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
           <AssociatedConnUserName />
-          <FullPath>CreateASPNetAndCRUDFromTable.sql</FullPath>
+          <FullPath>CreateASPNetAndISUDFromTable.sql</FullPath>
         </FileNode>
         <FileNode Name="CreateASPNetAndXML_CRUDFromTable.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
@@ -36,6 +36,18 @@
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
           <FullPath>CreateColumnsToClassPropertiesASPNET.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WRUser_ISUD.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WRUser_ISUD.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WRUser_S.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WRUser_S.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
