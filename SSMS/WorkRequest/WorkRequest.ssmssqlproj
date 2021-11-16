@@ -53,11 +53,11 @@
     </LogicalFolder>
     <LogicalFolder Name="Miscellaneous" Type="3" Sorted="true">
       <Items>
-        <FileNode Name="CreateASPNetAndCRUDFromTableExampleOutput.txt">
+        <FileNode Name="CreateASPNetAndISUDFromTableExampleOutput.txt">
           <AssociatedConnectionMoniker />
           <AssociatedConnSrvName />
           <AssociatedConnUserName />
-          <FullPath>CreateASPNetAndCRUDFromTableExampleOutput.txt</FullPath>
+          <FullPath>CreateASPNetAndISUDFromTableExampleOutput.txt</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
