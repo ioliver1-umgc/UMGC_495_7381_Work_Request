@@ -106,16 +106,16 @@ SET @ENTITY_ID_VARIABLE = 'ID';
 SET @ENTITY_ID_VARIABLE_TYPE = 'INT';
 
 --7. WHAT IS THE NAME OF THE SQL STORED PROCEDURE THAT WILL BE CALLED BY THE DATA BASE HANDLER TO UPDATE THE ENTITY DATA TABLE?
-SET @SPROC_FOR_UPDATES = 'uspWRProjectInfo_CRUD';
+SET @SPROC_FOR_UPDATES = 'uspWRUser_ISUD';
 
 --8. WHAT IS THE NAME OF THE SQL STORED PROCEDURE THAT WILL BE CALLED BY THE DATA BASE HANDLER TO RETRIEVE THE ENTITY DATA?
-SET @SPROC_FOR_GETTNG_ENTITY_DATA = 'uspWRProjectInfo_R';
+SET @SPROC_FOR_GETTNG_ENTITY_DATA = 'uspWRUser_S';
 
 --9. DO YOU WANT TO CREATE THE COMMENTS REGIONS FOR EACH SUB AND PROPERTY DECLARATION? (0=NO, 1=YES)	
 SET @CREATE_COMMENT_REGIONS = 1;
 
 --10. TABLE NAME TO CREATE CLASS FOR
-SET @ENTITY_TABLE_OR_VIEW_NAME = '''WRProjectInfo''';
+SET @ENTITY_TABLE_OR_VIEW_NAME = '''WRUser''';
 
 --11. DO YOU WANT TO CREATE THE ENTIRE CLASS. SET TO 0 IF YOU WANT TO JUST CREATE, E.G., THE SPROC FRAMEWORK
 SET @CREATE_ENTIRE_CLASS = 0;
@@ -866,7 +866,8 @@ BEGIN
 -- 3. Remove <sql_system_user> from last_update_date BY_WHO as appropriate from test data/ SELECT in INSERT. 
 -- 4. Remove all computed columns from the CREATE/INSERT/SELECT statements and test XML
 -- 5. Remove the TABLE_ID Column from the CREATE/INSERT/SELECT statements
--- 6. Set correct dates/non nulls in test data. Remove all other bugs I wasn''t smart enough TO find
+-- 6. Add TYPE_ACTION to SP Variables, add a BEGIN after the AS in the ISUD Proc
+-- 7. Set correct dates/non nulls in test data. Remove all other bugs I wasn''t smart enough TO find
 -- UPDATE fixes:
 -- 1. Replace TABLE_ID with ID of target table
 -- 2. Remove comma after the last column in the SET column list.
@@ -893,8 +894,8 @@ BEGIN
     INTO @TABLE_NAME2,
          @COLUMN_NAME2;
 
-    PRINT 'DECLARE @TYPE_ACTION VARCHAR(25)';
-    PRINT 'SET @TYPE_ACTION=''UPDATE''';
+    PRINT 'ADD this to the SPROC Passed paremeters: DECLARE @TYPE_ACTION VARCHAR(25)';
+    --PRINT 'SET @TYPE_ACTION=''UPDATE''';
     PRINT '';
     PRINT '';
     PRINT 'IF @TYPE_ACTION=''UPDATE''';
@@ -999,7 +1000,7 @@ BEGIN
     INTO @TABLE_NAME2,
          @COLUMN_NAME2;
 
-    PRINT 'SELECT';
+    PRINT 'VALUES';
     PRINT '	@' + @COLUMN_NAME + ',';
 
     WHILE (@@fetch_Status <> -1)
@@ -1027,7 +1028,7 @@ BEGIN
     END;
     DEALLOCATE MyCursorVIII;
     PRINT ')';
-
+	PRINT 'END'
     PRINT '--END CODE HERE--';
     PRINT '';
     PRINT '';
