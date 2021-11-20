@@ -3,8 +3,20 @@
   <Items>
     <LogicalFolder Name="Connections" Type="2" Sorted="true">
       <Items>
-        <ConnectionNode Name="MUCHACHOLAPTOP:MUCHACHOLAPTOP\dave_">
-          <Created>2021-11-12T12:49:15.2392083+01:00</Created>
+        <ConnectionNode Name="DESKTOP-KKJ5QGB:DESKTOP-KKJ5QGB\Will T">
+          <Created>2021-11-20T12:57:33.8451494-05:00</Created>
+          <Type>SQL</Type>
+          <Server>DESKTOP-KKJ5QGB</Server>
+          <UserName />
+          <Authentication>Windows Authentication</Authentication>
+          <InitialDB>MASTER</InitialDB>
+          <LoginTimeout>30</LoginTimeout>
+          <ExecutionTimeout>0</ExecutionTimeout>
+          <ConnectionProtocol>NotSpecified</ConnectionProtocol>
+          <ApplicationName>Microsoft SQL Server Management Studio - Query</ApplicationName>
+        </ConnectionNode>
+        <ConnectionNode Name="MUCHACHOLAPTOP:DESKTOP-KKJ5QGB\Will T">
+          <Created>2021-11-12T06:49:15.2392083-05:00</Created>
           <Type>SQL</Type>
           <Server>MUCHACHOLAPTOP</Server>
           <UserName />
@@ -20,8 +32,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="CreateASPNetAndISUDFromTable.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-KKJ5QGB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-KKJ5QGB</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CreateASPNetAndISUDFromTable.sql</FullPath>
         </FileNode>
@@ -48,6 +60,12 @@
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>WRUser_S.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WRWorkRequests_ISUD.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-KKJ5QGB:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>DESKTOP-KKJ5QGB</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WRWorkRequests_ISUD.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
