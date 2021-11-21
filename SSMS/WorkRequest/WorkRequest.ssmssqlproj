@@ -49,6 +49,18 @@
           <AssociatedConnUserName />
           <FullPath>CreateColumnsToClassPropertiesASPNET.sql</FullPath>
         </FileNode>
+        <FileNode Name="GeneralInformationTabDropDowns.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>GeneralInformationTabDropDowns.sql</FullPath>
+        </FileNode>
+        <FileNode Name="ProjectInformationTabDropDowns.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>ProjectInformationTabDropDowns.sql</FullPath>
+        </FileNode>
         <FileNode Name="WRUser_ISUD.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
@@ -72,6 +84,12 @@
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>WRWorkRequestsTemporalTableCreate.sql</FullPath>
+        </FileNode>
+        <FileNode Name="zzCreateForeignKeys.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>zzCreateForeignKeys.sql</FullPath>
         </FileNode>
       </Items>
     </LogicalFolder>
