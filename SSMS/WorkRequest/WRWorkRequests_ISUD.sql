@@ -2,7 +2,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 SET ANSI_NULLS ON 
 GO
-CREATE  PROCEDURE usp_WorkRequests_ISUD
+CREATE  PROCEDURE uspWRWorkRequests_ISUD
 		(
 	@AverageRate DECIMAL,
 	@BranchAssignmentID INT,
@@ -38,7 +38,7 @@ CREATE  PROCEDURE usp_WorkRequests_ISUD
 	@Supervisor VARCHAR(255),
 	@SupervisorName VARCHAR(255),
 	@SupervisorSharePointGroupID INT,
-	@WorkRequest_ID INT,
+	@WRWorkRequest_ID INT,
 	@WRNumber VARCHAR(255),
 	@WRStatusID INT,
 	@WRUrl VARCHAR(MAX),
@@ -110,11 +110,11 @@ BEGIN
 		Supervisor = @Supervisor,
 		SupervisorName = @SupervisorName,
 		SupervisorSharePointGroupID = @SupervisorSharePointGroupID,
-		--WorkRequest_ID = @WorkRequest_ID,
+		--WorkRequest_ID = @WRWorkRequest_ID,
 		WRNumber = @WRNumber,
 		WRStatusID = @WRStatusID,
 		WRUrl = @WRUrl
-		where [WorkRequest_ID]=  @WorkRequest_ID
+		where [WRWorkRequest_ID]=  @WRWorkRequest_ID
 END
  
  
@@ -156,7 +156,7 @@ BEGIN
 	Supervisor,
 	SupervisorName,
 	SupervisorSharePointGroupID,
-	--WorkRequest_ID,
+	--WorkRequest_ID,  not needed, it's identity
 	WRNumber,
 	WRStatusID,
 	WRUrl
@@ -197,7 +197,7 @@ VALUES
 	@Supervisor,
 	@SupervisorName,
 	@SupervisorSharePointGroupID,
-	--@WorkRequest_ID,
+	--@WRWorkRequest_ID, not needed, it's identity
 	@WRNumber,
 	@WRStatusID,
 	@WRUrl
