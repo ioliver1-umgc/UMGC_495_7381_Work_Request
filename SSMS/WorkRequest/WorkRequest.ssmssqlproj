@@ -32,8 +32,8 @@
     <LogicalFolder Name="Queries" Type="0" Sorted="true">
       <Items>
         <FileNode Name="CreateASPNetAndISUDFromTable.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:DESKTOP-KKJ5QGB:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>DESKTOP-KKJ5QGB</AssociatedConnSrvName>
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>CreateASPNetAndISUDFromTable.sql</FullPath>
         </FileNode>
@@ -66,18 +66,6 @@
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>WRUser_ISUD.sql</FullPath>
-        </FileNode>
-        <FileNode Name="WRUser_S.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>WRUser_S.sql</FullPath>
-        </FileNode>
-        <FileNode Name="WRWorkRequests_ISUD.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>WRWorkRequests_ISUD.sql</FullPath>
         </FileNode>
         <FileNode Name="WRWorkRequestsTemporalTableCreate.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
