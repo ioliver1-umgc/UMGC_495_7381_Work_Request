@@ -73,6 +73,12 @@
           <AssociatedConnUserName />
           <FullPath>ProjectInformationTabDropDowns.sql</FullPath>
         </FileNode>
+        <FileNode Name="WRProjectInfo_ISUD.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WRProjectInfo_ISUD.sql</FullPath>
+        </FileNode>
         <FileNode Name="WRUser_ISUD.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
@@ -84,6 +90,12 @@
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>WRUser_S.sql</FullPath>
+        </FileNode>
+        <FileNode Name="WRWorkRequest_ISUD.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>WRWorkRequest_ISUD.sql</FullPath>
         </FileNode>
         <FileNode Name="WRWorkRequestsTemporalTableCreate.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
