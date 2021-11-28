@@ -43,24 +43,6 @@
           <AssociatedConnUserName />
           <FullPath>CostDistributionTab.sql</FullPath>
         </FileNode>
-        <FileNode Name="CreateASPNetAndISUDFromTable.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>CreateASPNetAndISUDFromTable.sql</FullPath>
-        </FileNode>
-        <FileNode Name="CreateASPNetAndXML_CRUDFromTable.sql">
-          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
-          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
-          <AssociatedConnUserName />
-          <FullPath>CreateASPNetAndXML_CRUDFromTable.sql</FullPath>
-        </FileNode>
-        <FileNode Name="CreateColumnsToClassPropertiesASPNET.sql">
-          <AssociatedConnectionMoniker />
-          <AssociatedConnSrvName />
-          <AssociatedConnUserName />
-          <FullPath>CreateColumnsToClassPropertiesASPNET.sql</FullPath>
-        </FileNode>
         <FileNode Name="GeneralInformationTabDropDowns.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
@@ -114,6 +96,24 @@
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
           <AssociatedConnUserName />
           <FullPath>zzAlphabetizeWRProjectInfo.sql</FullPath>
+        </FileNode>
+        <FileNode Name="zzCreateASPNetAndISUDFromTable.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>zzCreateASPNetAndISUDFromTable.sql</FullPath>
+        </FileNode>
+        <FileNode Name="zzCreateASPNetAndXML_CRUDFromTable.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>zzCreateASPNetAndXML_CRUDFromTable.sql</FullPath>
+        </FileNode>
+        <FileNode Name="zzCreateColumnsToClassPropertiesASPNET.sql">
+          <AssociatedConnectionMoniker />
+          <AssociatedConnSrvName />
+          <AssociatedConnUserName />
+          <FullPath>zzCreateColumnsToClassPropertiesASPNET.sql</FullPath>
         </FileNode>
         <FileNode Name="zzCreateForeignKeys.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
