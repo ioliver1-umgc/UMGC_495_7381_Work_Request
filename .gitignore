@@ -1,29 +1,38 @@
-# Compiled class file
+################## Eclipse ######################
+target
+.metadata
+.settings
+.classpath
+.project
 *.class
+tmp/
+*.tmp
+*.bak
+*~.nib
+local.properties
+.loadpath
+.recommenders
 
-# Log file and Lock
+################### Log file and Lock ################## 
 *.log
 *.lock
 
-# Plugins
+################### Plugins ################## 
 /.plugins/
 
-# BlueJ files
+################### BlueJ files ################## 
 *.ctxt
 
-# Mobile Tools for Java (J2ME)
+################### Mobile Tools for Java (J2ME) ################## 
 .mtj.tmp/
 
-# Package Files #
+###################  Package Files ################### 
+!Application_Runnable_JARs/*.jar
+*.jar
 *.war
 *.nar
 *.ear
 *.rar
 
-# Keep Qt Jambi .jars
-!External/*.jar
-
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+###################  virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml ################## 
 hs_err_pid*
-
-/.metadata/
