@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+
 public class MainWindow {
 
 	private JFrame frmWorkRequestApplication;
@@ -39,12 +40,13 @@ public class MainWindow {
 	/**
 	 * Initialize the contents of the frame.
 	 */
+	
 	private void initialize() {
 		frmWorkRequestApplication = new JFrame();
 		frmWorkRequestApplication.setTitle("Work Request Application");
 		frmWorkRequestApplication.setBounds(100, 100, 450, 300);
 		frmWorkRequestApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+		CLASSPATH =.;C:\Program Files\Microsoft JDBC Driver 9.4 for SQL Server\sqljdbc_9.4\enu\mssql-jdbc-9.4.0.jre16.jar
 		JMenuBar menuBar = new JMenuBar();
 		frmWorkRequestApplication.setJMenuBar(menuBar);
 		
@@ -75,3 +77,17 @@ public class MainWindow {
 	};
 
 }
+//CLASSPATH =.;C:\Program Files\Microsoft JDBC Driver 9.4 for SQL Server\sqljdbc_9.4\enu\mssql-jdbc-9.4.0.jre16.jar
+/*
+ * public class SQLDatabaseConnection { // Connect to your database. // Replace
+ * server name, username, and password with your credentials public static void
+ * main(String[] args) { String connectionUrl =
+ * "jdbc:sqlserver://yourserver.database.windows.net:1433;" +
+ * "database=AdventureWorks;" + "user=yourusername@yourserver;" +
+ * "password=yourpassword;" + "encrypt=true;" + "trustServerCertificate=false;"
+ * + "loginTimeout=30;";
+ * 
+ * try (Connection connection = DriverManager.getConnection(connectionUrl);) {
+ * // Code here. } // Handle any errors that may have occurred. catch
+ * (SQLException e) { e.printStackTrace(); } } }
+ */
