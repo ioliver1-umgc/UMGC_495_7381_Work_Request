@@ -130,6 +130,7 @@ public class Login extends JFrame {
 				{
 					MainWindow window = new MainWindow();
 					window.frmWorkRequestApplication.setVisible(true);
+					setVisible(false);
 				}
 				else
 				{

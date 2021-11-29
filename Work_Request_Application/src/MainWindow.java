@@ -56,7 +56,7 @@ public class MainWindow {
 		frmWorkRequestApplication.setTitle("Work Request Application");
 		frmWorkRequestApplication.setBounds(100, 100, 450, 300);
 		frmWorkRequestApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		CLASSPATH =.;C:\Program Files\Microsoft JDBC Driver 9.4 for SQL Server\sqljdbc_9.4\enu\mssql-jdbc-9.4.0.jre16.jar
+		//CLASSPATH =.;C:\Program Files\Microsoft JDBC Driver 9.4 for SQL Server\sqljdbc_9.4\enu\mssql-jdbc-9.4.0.jre16.jar
 		JMenuBar menuBar = new JMenuBar();
 		frmWorkRequestApplication.setJMenuBar(menuBar);
 		
