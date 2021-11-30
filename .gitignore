@@ -27,8 +27,8 @@ local.properties
 .mtj.tmp/
 
 ###################  Package Files ################### 
-!Application_Runnable_JARs/*.jar
 *.jar
+!Application_Runnable_JARs/*.jar
 *.war
 *.nar
 *.ear
