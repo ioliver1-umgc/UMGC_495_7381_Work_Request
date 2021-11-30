@@ -26,6 +26,7 @@ import javax.swing.JComboBox;
 import javax.swing.JRadioButton;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
+import javax.swing.BoxLayout;
 
 
 public class MainWindow {
@@ -38,6 +39,7 @@ public class MainWindow {
 	JPanel assignmentTypePane;
 	JPanel costDistroPane;
 	JPanel personalAssignmentPane;
+	JPanel remarkSavePane;
 	JTextArea remarksTextArea;
 
 	/**
@@ -71,7 +73,7 @@ public class MainWindow {
 		
 		frmWorkRequestApplication = new JFrame();
 		frmWorkRequestApplication.setTitle("Work Request Application");
-		frmWorkRequestApplication.setBounds(100, 100, 900, 650);
+		frmWorkRequestApplication.setBounds(100, 100, 907, 730);
 		frmWorkRequestApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frmWorkRequestApplication.getContentPane().setLayout(new BorderLayout(0, 0));
         
@@ -80,24 +82,86 @@ public class MainWindow {
                
         newRequestPane = new JPanel();
         tabbedPane.addTab("New Work Request", null, newRequestPane, null);
-        newRequestPane.setLayout(new BorderLayout(0, 0));
         
         requestAnalyticsPane = new JPanel();
         tabbedPane.addTab("Analytics", null, requestAnalyticsPane, null);
+        newRequestPane.setLayout(new BoxLayout(newRequestPane, BoxLayout.Y_AXIS));
         
         newWorkRequestPane = new JTabbedPane(JTabbedPane.TOP);
-        newRequestPane.add(newWorkRequestPane, BorderLayout.CENTER);
+        newRequestPane.add(newWorkRequestPane);
         
         remarksTextArea = new JTextArea();
-        newRequestPane.add(remarksTextArea, BorderLayout.SOUTH);
+        remarkSavePane = new JPanel();
+        newRequestPane.add(remarkSavePane);
+        GridBagLayout gbl_remarkSavePane = new GridBagLayout();
+        gbl_remarkSavePane.columnWidths = new int[]{0, 0, 0, 0, 0};
+        gbl_remarkSavePane.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
+        gbl_remarkSavePane.columnWeights = new double[]{0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_remarkSavePane.rowWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        remarkSavePane.setLayout(gbl_remarkSavePane);
+        
+        verticalStrut_1 = Box.createVerticalStrut(20);
+        GridBagConstraints gbc_verticalStrut_1 = new GridBagConstraints();
+        gbc_verticalStrut_1.insets = new Insets(0, 0, 5, 5);
+        gbc_verticalStrut_1.gridx = 1;
+        gbc_verticalStrut_1.gridy = 0;
+        remarkSavePane.add(verticalStrut_1, gbc_verticalStrut_1);
+        
+        scrollPane = new JScrollPane();
+        GridBagConstraints gbc_scrollPane = new GridBagConstraints();
+        gbc_scrollPane.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane.gridheight = 2;
+        gbc_scrollPane.gridwidth = 2;
+        gbc_scrollPane.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane.gridx = 1;
+        gbc_scrollPane.gridy = 1;
+        remarkSavePane.add(scrollPane, gbc_scrollPane);
+        
+        textArea = new JTextArea();
+        scrollPane.setViewportView(textArea);
+        
+        horizontalStrut_5 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_horizontalStrut_5 = new GridBagConstraints();
+        gbc_horizontalStrut_5.insets = new Insets(0, 0, 5, 0);
+        gbc_horizontalStrut_5.gridx = 3;
+        gbc_horizontalStrut_5.gridy = 1;
+        remarkSavePane.add(horizontalStrut_5, gbc_horizontalStrut_5);
+        
+        horizontalStrut_4 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_horizontalStrut_4 = new GridBagConstraints();
+        gbc_horizontalStrut_4.insets = new Insets(0, 0, 5, 5);
+        gbc_horizontalStrut_4.gridx = 0;
+        gbc_horizontalStrut_4.gridy = 2;
+        remarkSavePane.add(horizontalStrut_4, gbc_horizontalStrut_4);
+        
+        saveRequestBtn = new JButton("Save");
+        GridBagConstraints gbc_saveRequestBtn = new GridBagConstraints();
+        gbc_saveRequestBtn.insets = new Insets(0, 0, 5, 5);
+        gbc_saveRequestBtn.gridx = 1;
+        gbc_saveRequestBtn.gridy = 3;
+        remarkSavePane.add(saveRequestBtn, gbc_saveRequestBtn);
+        
+        submitWorkRequestBtn = new JButton("Submit to PA");
+        GridBagConstraints gbc_submitWorkRequestBtn = new GridBagConstraints();
+        gbc_submitWorkRequestBtn.insets = new Insets(0, 0, 5, 5);
+        gbc_submitWorkRequestBtn.gridx = 2;
+        gbc_submitWorkRequestBtn.gridy = 3;
+        remarkSavePane.add(submitWorkRequestBtn, gbc_submitWorkRequestBtn);
+        
+        verticalStrut_6 = Box.createVerticalStrut(20);
+        GridBagConstraints gbc_verticalStrut_6 = new GridBagConstraints();
+        gbc_verticalStrut_6.insets = new Insets(0, 0, 0, 5);
+        gbc_verticalStrut_6.gridx = 0;
+        gbc_verticalStrut_6.gridy = 4;
+        remarkSavePane.add(verticalStrut_6, gbc_verticalStrut_6);
         
         generalInfoPane = new JPanel();
         newWorkRequestPane.addTab("General Information", null, generalInfoPane, null);
         GridBagLayout gbl_generalInfoPane = new GridBagLayout();
-        gbl_generalInfoPane.columnWidths = new int[]{0, 0, 0, 334, 0, 0, 0};
-        gbl_generalInfoPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_generalInfoPane.columnWidths = new int[]{0, 0, 0, 273, 0, 0, 0};
+        gbl_generalInfoPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_generalInfoPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-        gbl_generalInfoPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_generalInfoPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         generalInfoPane.setLayout(gbl_generalInfoPane);
         
         verticalStrut = Box.createVerticalStrut(20);
@@ -342,15 +406,8 @@ public class MainWindow {
         gbc_verticalStrut_2.gridy = 13;
         generalInfoPane.add(verticalStrut_2, gbc_verticalStrut_2);
         
-        verticalStrut_1 = Box.createVerticalStrut(20);
-        GridBagConstraints gbc_verticalStrut_1 = new GridBagConstraints();
-        gbc_verticalStrut_1.insets = new Insets(0, 0, 5, 5);
-        gbc_verticalStrut_1.gridx = 0;
-        gbc_verticalStrut_1.gridy = 14;
-        generalInfoPane.add(verticalStrut_1, gbc_verticalStrut_1);
-        
         lblNewLabel_3 = new JLabel("Date Added");
-        lblNewLabel_3.setForeground(new Color(176, 224, 230));
+        lblNewLabel_3.setForeground(Color.DARK_GRAY);
         lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
         lblNewLabel_3.setBackground(new Color(176, 224, 230));
         GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
@@ -361,7 +418,7 @@ public class MainWindow {
         generalInfoPane.add(lblNewLabel_3, gbc_lblNewLabel_3);
         
         lblNewLabel_4 = new JLabel("User");
-        lblNewLabel_4.setForeground(new Color(176, 224, 230));
+        lblNewLabel_4.setForeground(Color.DARK_GRAY);
         lblNewLabel_4.setBackground(new Color(176, 224, 230));
         lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
         GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
@@ -372,7 +429,7 @@ public class MainWindow {
         generalInfoPane.add(lblNewLabel_4, gbc_lblNewLabel_4);
         
         lblNewLabel_5 = new JLabel("Remark/Note");
-        lblNewLabel_5.setForeground(new Color(176, 224, 230));
+        lblNewLabel_5.setForeground(Color.DARK_GRAY);
         lblNewLabel_5.setBackground(new Color(176, 224, 230));
         lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
         GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
@@ -384,7 +441,7 @@ public class MainWindow {
         
         dateAddedTextField = new JTextField();
         GridBagConstraints gbc_dateAddedTextField = new GridBagConstraints();
-        gbc_dateAddedTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_dateAddedTextField.insets = new Insets(0, 0, 0, 5);
         gbc_dateAddedTextField.fill = GridBagConstraints.HORIZONTAL;
         gbc_dateAddedTextField.gridx = 2;
         gbc_dateAddedTextField.gridy = 15;
@@ -393,28 +450,24 @@ public class MainWindow {
         
         userTextField = new JTextField();
         GridBagConstraints gbc_userTextField = new GridBagConstraints();
-        gbc_userTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_userTextField.insets = new Insets(0, 0, 0, 5);
         gbc_userTextField.fill = GridBagConstraints.HORIZONTAL;
         gbc_userTextField.gridx = 3;
         gbc_userTextField.gridy = 15;
         generalInfoPane.add(userTextField, gbc_userTextField);
         userTextField.setColumns(10);
         
-        notesTextField = new JTextField();
-        GridBagConstraints gbc_notesTextField = new GridBagConstraints();
-        gbc_notesTextField.insets = new Insets(0, 0, 5, 5);
-        gbc_notesTextField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_notesTextField.gridx = 4;
-        gbc_notesTextField.gridy = 15;
-        generalInfoPane.add(notesTextField, gbc_notesTextField);
-        notesTextField.setColumns(10);
+        scrollPane_1 = new JScrollPane();
+        GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
+        gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane_1.insets = new Insets(0, 0, 0, 5);
+        gbc_scrollPane_1.gridx = 4;
+        gbc_scrollPane_1.gridy = 15;
+        generalInfoPane.add(scrollPane_1, gbc_scrollPane_1);
         
-        verticalStrut_3 = Box.createVerticalStrut(20);
-        GridBagConstraints gbc_verticalStrut_3 = new GridBagConstraints();
-        gbc_verticalStrut_3.insets = new Insets(0, 0, 0, 5);
-        gbc_verticalStrut_3.gridx = 0;
-        gbc_verticalStrut_3.gridy = 16;
-        generalInfoPane.add(verticalStrut_3, gbc_verticalStrut_3);
+        notesTextField = new JTextArea();
+        scrollPane_1.setViewportView(notesTextField);
+        notesTextField.setColumns(10);
         
         projectInfoPane = new JPanel();
         newWorkRequestPane.addTab("Project Information", null, projectInfoPane, null);
@@ -796,15 +849,13 @@ public class MainWindow {
 	private JTextField wrStatusTextFeild;
 	private JCheckBox isPMCheckBox;
 	private Component horizontalStrut_1;
-	private Component verticalStrut_1;
 	private JLabel lblNewLabel_3;
 	private JLabel lblNewLabel_4;
 	private JLabel lblNewLabel_5;
 	private Component verticalStrut_2;
 	private JTextField dateAddedTextField;
 	private JTextField userTextField;
-	private JTextField notesTextField;
-	private Component verticalStrut_3;
+	private JTextArea notesTextField;
 	private JLabel projectNameLabel;
 	private JLabel projectNumLabel;
 	private JLabel painLabel;
@@ -843,6 +894,15 @@ public class MainWindow {
 	private JRadioButton rdbtnNotApplicable;
 	private JTextField wrPathTextField;
 	private Component horizontalStrut_3;
+	private JButton saveRequestBtn;
+	private JButton submitWorkRequestBtn;
+	private JTextArea textArea;
+	private Component horizontalStrut_4;
+	private Component verticalStrut_6;
+	private Component verticalStrut_1;
+	private JScrollPane scrollPane;
+	private Component horizontalStrut_5;
+	private JScrollPane scrollPane_1;
 
 }
 //CLASSPATH =.;C:\Program Files\Microsoft JDBC Driver 9.4 for SQL Server\sqljdbc_9.4\enu\mssql-jdbc-9.4.0.jre16.jar
