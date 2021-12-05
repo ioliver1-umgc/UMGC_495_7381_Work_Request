@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="C:/GitHubRepo/UMGC_495_7381_Work_Request/_Shared/.p2/org.eclipse.text_3.12.0.v20210512-1644.jar"/>
 	<classpathentry kind="lib" path="C:/GitHubRepo/UMGC_495_7381_Work_Request/_Shared/.p2/org.eclipse.ui.forms_3.11.200.v20210622-0925.jar"/>
 	<classpathentry kind="lib" path="C:/GitHubRepo/UMGC_495_7381_Work_Request/_Shared/.p2/org.eclipse.ui.workbench_3.123.0.v20210817-0704.jar"/>
+	<classpathentry kind="lib" path="C:/GitHubRepo/UMGC_495_7381_Work_Request/_Shared/sqljdbc_9.4/enu/mssql-jdbc-9.4.0.jre16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

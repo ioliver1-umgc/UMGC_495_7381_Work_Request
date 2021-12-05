@@ -1,11 +1,14 @@
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -18,7 +21,6 @@ import javax.swing.Box;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
@@ -27,13 +29,14 @@ import javax.swing.JRadioButton;
 import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
-import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 
 
 public class MainWindow {
 
 	public JFrame frmWorkRequestApplication;
+	public static Connection connection;
+	public static Boolean isLocal;
 	
 	/**
 	 * Launch the application.
@@ -42,7 +45,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow();
+					MainWindow window = new MainWindow(isLocal);
 					window.frmWorkRequestApplication.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -54,8 +57,61 @@ public class MainWindow {
 	/**
 	 * Create the application.
 	 */
-	public MainWindow() {
+	public MainWindow(Boolean isLocal) 
+	{
 		initialize();
+		sqlConnection(isLocal);
+		try 
+		{
+			uspWRWorkRequest_ISUD(connection);
+			System.out.println("wrISUD connected and run");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("didn't grab wrISUD");
+		}
+	}
+	
+	public static boolean sqlConnection(Boolean isLocal)
+	{
+		boolean connected = false;
+		
+		if(isLocal)
+		{
+			String Localurl ="jdbc:sqlserver://localhost;databaseName=Pulse";
+			String Localuser = "sa";
+			String Localpassword = "1234567890";
+			
+			try 
+			{
+				connection = DriverManager.getConnection(Localurl, Localuser, Localpassword);
+				System.out.println("Connect to MS SQL Server on Local Host. Good Job Dude.");
+			} 
+			catch (SQLException e) 
+			{
+				System.out.println("Oops, there's an error connecting to the LocalHost");
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			String url ="jdbc:sqlserver://cmsc495team03.eastus.cloudapp.azure.com;databaseName=Pulse";
+			String user = "sa";
+			String password = "1234567890";
+			try 
+			{
+				connection = DriverManager.getConnection(url,user,password);
+				System.out.println("Connect to MS SQL Server on Azure. Good Job Dude.");
+				connected = true;
+			} 
+			catch (SQLException e) 
+			{
+				System.out.println("Oops, there's an error connecting to Azure");
+				e.printStackTrace();
+			}
+		}
+		
+		return connected; 
 	}
 
 	/**
@@ -847,14 +903,14 @@ public class MainWindow {
         gbc_assignmentCatLabel.gridy = 1;
         assignmentTypePane.add(assignmentCatLabel, gbc_assignmentCatLabel);
         
-        comboBox = new JComboBox();
-        GridBagConstraints gbc_comboBox = new GridBagConstraints();
-        gbc_comboBox.gridwidth = 3;
-        gbc_comboBox.insets = new Insets(0, 0, 5, 5);
-        gbc_comboBox.fill = GridBagConstraints.HORIZONTAL;
-        gbc_comboBox.gridx = 2;
-        gbc_comboBox.gridy = 1;
-        assignmentTypePane.add(comboBox, gbc_comboBox);
+        assignmentCatComboBox = new JComboBox();
+        GridBagConstraints gbc_assignmentCatComboBox = new GridBagConstraints();
+        gbc_assignmentCatComboBox.gridwidth = 3;
+        gbc_assignmentCatComboBox.insets = new Insets(0, 0, 5, 5);
+        gbc_assignmentCatComboBox.fill = GridBagConstraints.HORIZONTAL;
+        gbc_assignmentCatComboBox.gridx = 2;
+        gbc_assignmentCatComboBox.gridy = 1;
+        assignmentTypePane.add(assignmentCatComboBox, gbc_assignmentCatComboBox);
         
         horizontalStrut_6 = Box.createHorizontalStrut(20);
         GridBagConstraints gbc_horizontalStrut_6 = new GridBagConstraints();
@@ -871,14 +927,14 @@ public class MainWindow {
         gbc_assignmentTypeLabel.gridy = 2;
         assignmentTypePane.add(assignmentTypeLabel, gbc_assignmentTypeLabel);
         
-        comboBox_1 = new JComboBox();
-        GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
-        gbc_comboBox_1.gridwidth = 3;
-        gbc_comboBox_1.insets = new Insets(0, 0, 5, 5);
-        gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
-        gbc_comboBox_1.gridx = 2;
-        gbc_comboBox_1.gridy = 2;
-        assignmentTypePane.add(comboBox_1, gbc_comboBox_1);
+        assignmentTypeComboBox = new JComboBox();
+        GridBagConstraints gbc_assignmentTypeComboBox = new GridBagConstraints();
+        gbc_assignmentTypeComboBox.gridwidth = 3;
+        gbc_assignmentTypeComboBox.insets = new Insets(0, 0, 5, 5);
+        gbc_assignmentTypeComboBox.fill = GridBagConstraints.HORIZONTAL;
+        gbc_assignmentTypeComboBox.gridx = 2;
+        gbc_assignmentTypeComboBox.gridy = 2;
+        assignmentTypePane.add(assignmentTypeComboBox, gbc_assignmentTypeComboBox);
         
         assignmentSubTypeLabel = new JLabel("Assignment Subtype");
         GridBagConstraints gbc_assignmentSubTypeLabel = new GridBagConstraints();
@@ -888,14 +944,14 @@ public class MainWindow {
         gbc_assignmentSubTypeLabel.gridy = 3;
         assignmentTypePane.add(assignmentSubTypeLabel, gbc_assignmentSubTypeLabel);
         
-        comboBox_2 = new JComboBox();
-        GridBagConstraints gbc_comboBox_2 = new GridBagConstraints();
-        gbc_comboBox_2.gridwidth = 3;
-        gbc_comboBox_2.insets = new Insets(0, 0, 5, 5);
-        gbc_comboBox_2.fill = GridBagConstraints.HORIZONTAL;
-        gbc_comboBox_2.gridx = 2;
-        gbc_comboBox_2.gridy = 3;
-        assignmentTypePane.add(comboBox_2, gbc_comboBox_2);
+        assignmentSubTypeComboBox = new JComboBox();
+        GridBagConstraints gbc_assignmentSubTypeComboBox = new GridBagConstraints();
+        gbc_assignmentSubTypeComboBox.gridwidth = 3;
+        gbc_assignmentSubTypeComboBox.insets = new Insets(0, 0, 5, 5);
+        gbc_assignmentSubTypeComboBox.fill = GridBagConstraints.HORIZONTAL;
+        gbc_assignmentSubTypeComboBox.gridx = 2;
+        gbc_assignmentSubTypeComboBox.gridy = 3;
+        assignmentTypePane.add(assignmentSubTypeComboBox, gbc_assignmentSubTypeComboBox);
         
         supervisorInfo = new JLabel("Supervisor/Acting Supervisor");
         GridBagConstraints gbc_supervisorInfo = new GridBagConstraints();
@@ -5027,10 +5083,10 @@ public class MainWindow {
         historyPane = new JPanel();
         newWorkRequestPane.addTab("History", null, historyPane, null);
         GridBagLayout gbl_historyPane = new GridBagLayout();
-        gbl_historyPane.columnWidths = new int[]{0};
-        gbl_historyPane.rowHeights = new int[]{0};
-        gbl_historyPane.columnWeights = new double[]{Double.MIN_VALUE};
-        gbl_historyPane.rowWeights = new double[]{Double.MIN_VALUE};
+        gbl_historyPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
+        gbl_historyPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
+        gbl_historyPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_historyPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         historyPane.setLayout(gbl_historyPane);
 		
 	}
@@ -5045,6 +5101,43 @@ public class MainWindow {
 		
 	};
 	
+
+	
+	public static boolean uspWRWorkRequest_ISUD(Connection con) throws SQLException 
+	{
+		boolean called = false;
+		
+	    try(PreparedStatement pstmt = con.prepareStatement("{call uspWRWorkRequest_ISUD(?)"); ) 
+	    {  
+
+	    	//pstmt.setDouble(1, 1.1);
+	        ResultSet rs = pstmt.executeQuery();  
+
+	        while (rs.next()) 
+	        {  
+	        	System.out.println("AverageRate:");  
+	            System.out.println(rs.getString("AverageRate")); 
+	            /*System.out.println("EMPLOYEE:");  
+	            System.out.println(rs.getString("LastName") + ", " + rs.getString("FirstName"));  
+	            System.out.println("MANAGER:");  
+	            System.out.println(rs.getString("ManagerLastName") + ", " + rs.getString("ManagerFirstName"));  
+	            System.out.println();
+	            */  
+	        }  
+	        
+	        called = true;
+	    }
+		catch (SQLException e) 
+		{
+			System.out.println("Oops, there's an error connecting to Azure");
+			e.printStackTrace();
+		}
+	    
+	    return called;
+	}
+	
+	
+
 	private JPanel newRequestPane;
 	private JPanel requestAnalyticsPane;
 	private JPanel generalInfoPane;
@@ -5152,9 +5245,9 @@ public class MainWindow {
 	private JRadioButton drChecks_YesRadioBtn;
 	private JRadioButton drChecks_NoRadioBtn;
 	private JCheckBox selectSuperCheckBox;
-	private JComboBox comboBox;
-	private JComboBox comboBox_1;
-	private JComboBox comboBox_2;
+	private JComboBox assignmentCatComboBox;
+	private JComboBox assignmentTypeComboBox;
+	private JComboBox assignmentSubTypeComboBox;
 	private Component horizontalStrut_6;
 	private Component verticalStrut_3;
 	private Component horizontalStrut_7;
