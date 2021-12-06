@@ -60,21 +60,31 @@ public class MainWindow {
 	public MainWindow(Boolean isLocal) 
 	{
 		initialize();
-		sqlConnection(isLocal);
-		try 
-		{
-			uspWRWorkRequest_ISUD(connection);
-			System.out.println("wrISUD connected and run");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("didn't grab wrISUD");
-		}
+//		sqlConnection(isLocal);
+//		try 
+//		{
+//			uspWRWorkRequest_ISUD(connection);
+//			System.out.println("wrISUD connected and run");
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			System.out.println("didn't grab wrISUD");
+//		}
+//		try {
+//			connection.close();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			System.out.println("SQL Connection Failed to Close!");
+//			e.printStackTrace();
+//		}
 	}
 	
 	public static boolean sqlConnection(Boolean isLocal)
 	{
 		boolean connected = false;
+		
+		if(isLocal == null)
+			isLocal = true;
 		
 		if(isLocal)
 		{
@@ -84,6 +94,7 @@ public class MainWindow {
 			
 			try 
 			{
+				System.out.println("Attempting to connect to: " + Localurl);
 				connection = DriverManager.getConnection(Localurl, Localuser, Localpassword);
 				System.out.println("Connect to MS SQL Server on Local Host. Good Job Dude.");
 			} 
@@ -122,7 +133,7 @@ public class MainWindow {
 		
 		frmWorkRequestApplication = new JFrame();
 		frmWorkRequestApplication.setTitle("Work Request Application");
-		frmWorkRequestApplication.setBounds(100, 100, 907, 730);
+		frmWorkRequestApplication.setBounds(100, 100, 999, 730);
 		frmWorkRequestApplication.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frmWorkRequestApplication.getContentPane().setLayout(new BorderLayout(0, 0));
         
@@ -5082,13 +5093,622 @@ public class MainWindow {
         
         historyPane = new JPanel();
         newWorkRequestPane.addTab("History", null, historyPane, null);
-        GridBagLayout gbl_historyPane = new GridBagLayout();
-        gbl_historyPane.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0};
-        gbl_historyPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0};
-        gbl_historyPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        gbl_historyPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-        historyPane.setLayout(gbl_historyPane);
+        historyPane.setLayout(new BoxLayout(historyPane, BoxLayout.Y_AXIS));
+        
+        historyScrollPane = new JScrollPane();
+        historyPane.add(historyScrollPane);
+        
+        historyObjectHolderPane = new JPanel();
+        historyScrollPane.setViewportView(historyObjectHolderPane);
+        historyObjectHolderPane.setLayout(new BoxLayout(historyObjectHolderPane, BoxLayout.Y_AXIS));
+        
+        historyObjectTitlePane = new JPanel();
+        historyObjectHolderPane.add(historyObjectTitlePane);
+        GridBagLayout gbl_historyObjectTitlePane = new GridBagLayout();
+        gbl_historyObjectTitlePane.columnWidths = new int[]{0, 0, 288, 270, 147, 0, 0};
+        gbl_historyObjectTitlePane.rowHeights = new int[] {0, 0, 0};
+        gbl_historyObjectTitlePane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_historyObjectTitlePane.rowWeights = new double[]{0.0, 0.0, Double.MIN_VALUE};
+        historyObjectTitlePane.setLayout(gbl_historyObjectTitlePane);
+        
+        historyObjectTitleVerticalStrut = Box.createVerticalStrut(20);
+        GridBagConstraints gbc_historyObjectTitleVerticalStrut = new GridBagConstraints();
+        gbc_historyObjectTitleVerticalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_historyObjectTitleVerticalStrut.gridx = 0;
+        gbc_historyObjectTitleVerticalStrut.gridy = 0;
+        historyObjectTitlePane.add(historyObjectTitleVerticalStrut, gbc_historyObjectTitleVerticalStrut);
+        
+        historyObjectTitleHorizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_historyObjectTitleHorizontalStrut = new GridBagConstraints();
+        gbc_historyObjectTitleHorizontalStrut.insets = new Insets(0, 0, 0, 5);
+        gbc_historyObjectTitleHorizontalStrut.gridx = 0;
+        gbc_historyObjectTitleHorizontalStrut.gridy = 1;
+        historyObjectTitlePane.add(historyObjectTitleHorizontalStrut, gbc_historyObjectTitleHorizontalStrut);
+        
+        modDateTimeTitleLabel = new JLabel("Date Modified");
+        modDateTimeTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        modDateTimeTitleLabel.setOpaque(true);
+        modDateTimeTitleLabel.setForeground(new Color(255, 255, 255));
+        modDateTimeTitleLabel.setBackground(new Color(153, 153, 153));
+        GridBagConstraints gbc_modDateTimeTitleLabel = new GridBagConstraints();
+        gbc_modDateTimeTitleLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_modDateTimeTitleLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_modDateTimeTitleLabel.gridx = 1;
+        gbc_modDateTimeTitleLabel.gridy = 1;
+        historyObjectTitlePane.add(modDateTimeTitleLabel, gbc_modDateTimeTitleLabel);
+        
+        oldValueTitleLabel = new JLabel("Old Value");
+        oldValueTitleLabel.setOpaque(true);
+        oldValueTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        oldValueTitleLabel.setForeground(Color.WHITE);
+        oldValueTitleLabel.setBackground(new Color(153, 153, 153));
+        GridBagConstraints gbc_oldValueTitleLabel = new GridBagConstraints();
+        gbc_oldValueTitleLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_oldValueTitleLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_oldValueTitleLabel.gridx = 2;
+        gbc_oldValueTitleLabel.gridy = 1;
+        historyObjectTitlePane.add(oldValueTitleLabel, gbc_oldValueTitleLabel);
+        
+        newValueTitleLabel = new JLabel("New Values");
+        newValueTitleLabel.setOpaque(true);
+        newValueTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        newValueTitleLabel.setForeground(Color.WHITE);
+        newValueTitleLabel.setBackground(new Color(153, 153, 153));
+        GridBagConstraints gbc_newValueTitleLabel = new GridBagConstraints();
+        gbc_newValueTitleLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_newValueTitleLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_newValueTitleLabel.gridx = 3;
+        gbc_newValueTitleLabel.gridy = 1;
+        historyObjectTitlePane.add(newValueTitleLabel, gbc_newValueTitleLabel);
+        
+        modByTitleLabel = new JLabel("Modified By");
+        modByTitleLabel.setOpaque(true);
+        modByTitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        modByTitleLabel.setForeground(Color.WHITE);
+        modByTitleLabel.setBackground(new Color(153, 153, 153));
+        GridBagConstraints gbc_modByTitleLabel = new GridBagConstraints();
+        gbc_modByTitleLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_modByTitleLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_modByTitleLabel.gridx = 4;
+        gbc_modByTitleLabel.gridy = 1;
+        historyObjectTitlePane.add(modByTitleLabel, gbc_modByTitleLabel);
+        
+        historyObjectTitleVerticalStrut_2 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_historyObjectTitleVerticalStrut_2 = new GridBagConstraints();
+        gbc_historyObjectTitleVerticalStrut_2.gridx = 5;
+        gbc_historyObjectTitleVerticalStrut_2.gridy = 1;
+        historyObjectTitlePane.add(historyObjectTitleVerticalStrut_2, gbc_historyObjectTitleVerticalStrut_2);
+        
+        object1_historyObjectPane = new JPanel();
+        historyObjectHolderPane.add(object1_historyObjectPane);
+        GridBagLayout gbl_historyObjectPane = new GridBagLayout();
+        gbl_historyObjectPane.columnWidths = new int[]{0, 0, 288, 270, 147, 0, 0};
+        gbl_historyObjectPane.rowHeights = new int[] {0, 0, 0, 0};
+        gbl_historyObjectPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_historyObjectPane.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        object1_historyObjectPane.setLayout(gbl_historyObjectPane);
+        
+        object1_horizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object1_horizontalStrut = new GridBagConstraints();
+        gbc_object1_horizontalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object1_horizontalStrut.gridx = 0;
+        gbc_object1_horizontalStrut.gridy = 0;
+        object1_historyObjectPane.add(object1_horizontalStrut, gbc_object1_horizontalStrut);
+                
+        object1_fillerLabel = new JLabel("    ");
+        object1_fillerLabel.setOpaque(true);
+        object1_fillerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        object1_fillerLabel.setForeground(Color.WHITE);
+        object1_fillerLabel.setBackground(new Color(204, 204, 204));
+        GridBagConstraints gbc_object1_fillerLabel = new GridBagConstraints();
+        gbc_object1_fillerLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object1_fillerLabel.gridwidth = 4;
+        gbc_object1_fillerLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object1_fillerLabel.gridx = 1;
+        gbc_object1_fillerLabel.gridy = 0;
+        object1_historyObjectPane.add(object1_fillerLabel, gbc_object1_fillerLabel);
+        
+        object1_horizontalStrut_2 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object1_horizontalStrut_2 = new GridBagConstraints();
+        gbc_object1_horizontalStrut_2.insets = new Insets(0, 0, 5, 0);
+        gbc_object1_horizontalStrut_2.gridx = 5;
+        gbc_object1_horizontalStrut_2.gridy = 0;
+        object1_historyObjectPane.add(object1_horizontalStrut_2, gbc_object1_horizontalStrut_2);
+        
+        object1_verticalStrut = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object1_verticalStrut = new GridBagConstraints();
+        gbc_object1_verticalStrut.fill = GridBagConstraints.VERTICAL;
+        gbc_object1_verticalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object1_verticalStrut.gridx = 0;
+        gbc_object1_verticalStrut.gridy = 1;
+        object1_historyObjectPane.add(object1_verticalStrut, gbc_object1_verticalStrut);
+        
+        object1_dateModifiedLabel = new JLabel("0/0/1987");
+        GridBagConstraints gbc_object1_dateModifiedLabel = new GridBagConstraints();
+        gbc_object1_dateModifiedLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object1_dateModifiedLabel.gridx = 1;
+        gbc_object1_dateModifiedLabel.gridy = 1;
+        object1_historyObjectPane.add(object1_dateModifiedLabel, gbc_object1_dateModifiedLabel);
+        
+        object1_OldValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object1_OldValueScrollPane = new GridBagConstraints();
+        gbc_object1_OldValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object1_OldValueScrollPane.gridheight = 2;
+        gbc_object1_OldValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object1_OldValueScrollPane.gridx = 2;
+        gbc_object1_OldValueScrollPane.gridy = 1;
+        object1_historyObjectPane.add(object1_OldValueScrollPane, gbc_object1_OldValueScrollPane);
+        
+        object1_OldValueTextArea = new JTextArea();
+        object1_OldValueScrollPane.setViewportView(object1_OldValueTextArea);
+        object1_OldValueTextArea.setLineWrap(true);
+        object1_OldValueTextArea.setEnabled(true);
+        object1_OldValueTextArea.setEditable(true);
+        object1_OldValueTextArea.setText("");
+        
+        object1_NewValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object1_NewValueScrollPane = new GridBagConstraints();
+        gbc_object1_NewValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object1_NewValueScrollPane.gridheight = 2;
+        gbc_object1_NewValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object1_NewValueScrollPane.gridx = 3;
+        gbc_object1_NewValueScrollPane.gridy = 1;
+        object1_historyObjectPane.add(object1_NewValueScrollPane, gbc_object1_NewValueScrollPane);
+        
+        object1_NewValueTextArea_1 = new JTextArea();
+        object1_NewValueScrollPane.setViewportView(object1_NewValueTextArea_1);
+        object1_NewValueTextArea_1.setText("");
+        object1_NewValueTextArea_1.setLineWrap(true);
+        object1_NewValueTextArea_1.setEnabled(true);
+        object1_NewValueTextArea_1.setEditable(true);
+        
+        object1_ModifiedByLabel = new JLabel("System");
+        GridBagConstraints gbc_object1_ModifiedByLabel = new GridBagConstraints();
+        gbc_object1_ModifiedByLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object1_ModifiedByLabel.gridheight = 2;
+        gbc_object1_ModifiedByLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object1_ModifiedByLabel.gridx = 4;
+        gbc_object1_ModifiedByLabel.gridy = 1;
+        object1_historyObjectPane.add(object1_ModifiedByLabel, gbc_object1_ModifiedByLabel);
+        
+        object1_verticalStrut_2 = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object1_verticalStrut_2 = new GridBagConstraints();
+        gbc_object1_verticalStrut_2.insets = new Insets(0, 0, 0, 5);
+        gbc_object1_verticalStrut_2.gridx = 0;
+        gbc_object1_verticalStrut_2.gridy = 2;
+        object1_historyObjectPane.add(object1_verticalStrut_2, gbc_object1_verticalStrut_2);
+        
+        object1_timeModifiedLabel = new JLabel("00:00:01 AM");
+        GridBagConstraints gbc_object1_timeModifiedLabel = new GridBagConstraints();
+        gbc_object1_timeModifiedLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object1_timeModifiedLabel.gridx = 1;
+        gbc_object1_timeModifiedLabel.gridy = 2;
+        object1_historyObjectPane.add(object1_timeModifiedLabel, gbc_object1_timeModifiedLabel);
+        
+		object2_historyObjectPane = new JPanel();
+        historyObjectHolderPane.add(object2_historyObjectPane);
+        GridBagLayout gbl_object2_historyObjectPane = new GridBagLayout();
+        gbl_object2_historyObjectPane.columnWidths = new int[]{0, 0, 288, 270, 147, 0, 0};
+        gbl_object2_historyObjectPane.rowHeights = new int[] {0, 0, 0, 0};
+        gbl_object2_historyObjectPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_object2_historyObjectPane.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        object2_historyObjectPane.setLayout(gbl_object2_historyObjectPane);
+        
+        object2_horizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object2_horizontalStrut = new GridBagConstraints();
+        gbc_object2_horizontalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object2_horizontalStrut.gridx = 0;
+        gbc_object2_horizontalStrut.gridy = 0;
+        object2_historyObjectPane.add(object2_horizontalStrut, gbc_object2_horizontalStrut);
+                
+        object2_fillerLabel = new JLabel("    ");
+        object2_fillerLabel.setOpaque(true);
+        object2_fillerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        object2_fillerLabel.setForeground(Color.WHITE);
+        object2_fillerLabel.setBackground(new Color(204, 204, 204));
+        GridBagConstraints gbc_object2_fillerLabel = new GridBagConstraints();
+        gbc_object2_fillerLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object2_fillerLabel.gridwidth = 4;
+        gbc_object2_fillerLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object2_fillerLabel.gridx = 1;
+        gbc_object2_fillerLabel.gridy = 0;
+        object2_historyObjectPane.add(object2_fillerLabel, gbc_object2_fillerLabel);
+        
+        object2_horizontalStrut_2 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object2_horizontalStrut_2 = new GridBagConstraints();
+        gbc_object2_horizontalStrut_2.insets = new Insets(0, 0, 5, 0);
+        gbc_object2_horizontalStrut_2.gridx = 5;
+        gbc_object2_horizontalStrut_2.gridy = 0;
+        object2_historyObjectPane.add(object2_horizontalStrut_2, gbc_object2_horizontalStrut_2);
+        
+        object2_verticalStrut = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object2_verticalStrut = new GridBagConstraints();
+        gbc_object2_verticalStrut.fill = GridBagConstraints.VERTICAL;
+        gbc_object2_verticalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object2_verticalStrut.gridx = 0;
+        gbc_object2_verticalStrut.gridy = 1;
+        object2_historyObjectPane.add(object2_verticalStrut, gbc_object2_verticalStrut);
+        
+        object2_dateModifiedLabel = new JLabel("0/0/1987");
+        GridBagConstraints gbc_object2_dateModifiedLabel = new GridBagConstraints();
+        gbc_object2_dateModifiedLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object2_dateModifiedLabel.gridx = 1;
+        gbc_object2_dateModifiedLabel.gridy = 1;
+        object2_historyObjectPane.add(object2_dateModifiedLabel, gbc_object2_dateModifiedLabel);
+        
+        object2_OldValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object2_OldValueScrollPane = new GridBagConstraints();
+        gbc_object2_OldValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object2_OldValueScrollPane.gridheight = 2;
+        gbc_object2_OldValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object2_OldValueScrollPane.gridx = 2;
+        gbc_object2_OldValueScrollPane.gridy = 1;
+        object2_historyObjectPane.add(object2_OldValueScrollPane, gbc_object2_OldValueScrollPane);
+        
+        object2_OldValueTextArea = new JTextArea();
+        object2_OldValueScrollPane.setViewportView(object2_OldValueTextArea);
+        object2_OldValueTextArea.setLineWrap(true);
+        object2_OldValueTextArea.setEnabled(true);
+        object2_OldValueTextArea.setEditable(true);
+        object2_OldValueTextArea.setText("");
+        
+        object2_NewValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object2_NewValueScrollPane = new GridBagConstraints();
+        gbc_object2_NewValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object2_NewValueScrollPane.gridheight = 2;
+        gbc_object2_NewValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object2_NewValueScrollPane.gridx = 3;
+        gbc_object2_NewValueScrollPane.gridy = 1;
+        object2_historyObjectPane.add(object2_NewValueScrollPane, gbc_object2_NewValueScrollPane);
+        
+        object2_NewValueTextArea_1 = new JTextArea();
+        object2_NewValueScrollPane.setViewportView(object2_NewValueTextArea_1);
+        object2_NewValueTextArea_1.setText("");
+        object2_NewValueTextArea_1.setLineWrap(true);
+        object2_NewValueTextArea_1.setEnabled(true);
+        object2_NewValueTextArea_1.setEditable(true);
+        
+        object2_ModifiedByLabel = new JLabel("System");
+        GridBagConstraints gbc_object2_ModifiedByLabel = new GridBagConstraints();
+        gbc_object2_ModifiedByLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object2_ModifiedByLabel.gridheight = 2;
+        gbc_object2_ModifiedByLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object2_ModifiedByLabel.gridx = 4;
+        gbc_object2_ModifiedByLabel.gridy = 1;
+        object2_historyObjectPane.add(object2_ModifiedByLabel, gbc_object2_ModifiedByLabel);
+        
+        object2_verticalStrut_2 = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object2_verticalStrut_2 = new GridBagConstraints();
+        gbc_object2_verticalStrut_2.insets = new Insets(0, 0, 0, 5);
+        gbc_object2_verticalStrut_2.gridx = 0;
+        gbc_object2_verticalStrut_2.gridy = 2;
+        object2_historyObjectPane.add(object2_verticalStrut_2, gbc_object2_verticalStrut_2);
+        
+        object2_timeModifiedLabel = new JLabel("00:00:01 AM");
+        GridBagConstraints gbc_object2_timeModifiedLabel = new GridBagConstraints();
+        gbc_object2_timeModifiedLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object2_timeModifiedLabel.gridx = 1;
+        gbc_object2_timeModifiedLabel.gridy = 2;
+        object2_historyObjectPane.add(object2_timeModifiedLabel, gbc_object2_timeModifiedLabel);
 		
+		object3_historyObjectPane = new JPanel();
+        historyObjectHolderPane.add(object3_historyObjectPane);
+        GridBagLayout gbl_object3_historyObjectPane = new GridBagLayout();
+        gbl_object3_historyObjectPane.columnWidths = new int[]{0, 0, 288, 270, 147, 0, 0};
+        gbl_object3_historyObjectPane.rowHeights = new int[] {0, 0, 0, 0};
+        gbl_object3_historyObjectPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_object3_historyObjectPane.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        object3_historyObjectPane.setLayout(gbl_object3_historyObjectPane);
+        
+        object3_horizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object3_horizontalStrut = new GridBagConstraints();
+        gbc_object3_horizontalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object3_horizontalStrut.gridx = 0;
+        gbc_object3_horizontalStrut.gridy = 0;
+        object3_historyObjectPane.add(object3_horizontalStrut, gbc_object3_horizontalStrut);
+                
+        object3_fillerLabel = new JLabel("    ");
+        object3_fillerLabel.setOpaque(true);
+        object3_fillerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        object3_fillerLabel.setForeground(Color.WHITE);
+        object3_fillerLabel.setBackground(new Color(204, 204, 204));
+        GridBagConstraints gbc_object3_fillerLabel = new GridBagConstraints();
+        gbc_object3_fillerLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object3_fillerLabel.gridwidth = 4;
+        gbc_object3_fillerLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object3_fillerLabel.gridx = 1;
+        gbc_object3_fillerLabel.gridy = 0;
+        object3_historyObjectPane.add(object3_fillerLabel, gbc_object3_fillerLabel);
+        
+        object3_horizontalStrut_2 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object3_horizontalStrut_2 = new GridBagConstraints();
+        gbc_object3_horizontalStrut_2.insets = new Insets(0, 0, 5, 0);
+        gbc_object3_horizontalStrut_2.gridx = 5;
+        gbc_object3_horizontalStrut_2.gridy = 0;
+        object3_historyObjectPane.add(object3_horizontalStrut_2, gbc_object3_horizontalStrut_2);
+        
+        object3_verticalStrut = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object3_verticalStrut = new GridBagConstraints();
+        gbc_object3_verticalStrut.fill = GridBagConstraints.VERTICAL;
+        gbc_object3_verticalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object3_verticalStrut.gridx = 0;
+        gbc_object3_verticalStrut.gridy = 1;
+        object3_historyObjectPane.add(object3_verticalStrut, gbc_object3_verticalStrut);
+        
+        object3_dateModifiedLabel = new JLabel("0/0/1987");
+        GridBagConstraints gbc_object3_dateModifiedLabel = new GridBagConstraints();
+        gbc_object3_dateModifiedLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object3_dateModifiedLabel.gridx = 1;
+        gbc_object3_dateModifiedLabel.gridy = 1;
+        object3_historyObjectPane.add(object3_dateModifiedLabel, gbc_object3_dateModifiedLabel);
+        
+        object3_OldValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object3_OldValueScrollPane = new GridBagConstraints();
+        gbc_object3_OldValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object3_OldValueScrollPane.gridheight = 2;
+        gbc_object3_OldValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object3_OldValueScrollPane.gridx = 2;
+        gbc_object3_OldValueScrollPane.gridy = 1;
+        object3_historyObjectPane.add(object3_OldValueScrollPane, gbc_object3_OldValueScrollPane);
+        
+        object3_OldValueTextArea = new JTextArea();
+        object3_OldValueScrollPane.setViewportView(object3_OldValueTextArea);
+        object3_OldValueTextArea.setLineWrap(true);
+        object3_OldValueTextArea.setEnabled(true);
+        object3_OldValueTextArea.setEditable(true);
+        object3_OldValueTextArea.setText("");
+        
+        object3_NewValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object3_NewValueScrollPane = new GridBagConstraints();
+        gbc_object3_NewValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object3_NewValueScrollPane.gridheight = 2;
+        gbc_object3_NewValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object3_NewValueScrollPane.gridx = 3;
+        gbc_object3_NewValueScrollPane.gridy = 1;
+        object3_historyObjectPane.add(object3_NewValueScrollPane, gbc_object3_NewValueScrollPane);
+        
+        object3_NewValueTextArea_1 = new JTextArea();
+        object3_NewValueScrollPane.setViewportView(object3_NewValueTextArea_1);
+        object3_NewValueTextArea_1.setText("");
+        object3_NewValueTextArea_1.setLineWrap(true);
+        object3_NewValueTextArea_1.setEnabled(true);
+        object3_NewValueTextArea_1.setEditable(true);
+        
+        object3_ModifiedByLabel = new JLabel("System");
+        GridBagConstraints gbc_object3_ModifiedByLabel = new GridBagConstraints();
+        gbc_object3_ModifiedByLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object3_ModifiedByLabel.gridheight = 2;
+        gbc_object3_ModifiedByLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object3_ModifiedByLabel.gridx = 4;
+        gbc_object3_ModifiedByLabel.gridy = 1;
+        object3_historyObjectPane.add(object3_ModifiedByLabel, gbc_object3_ModifiedByLabel);
+        
+        object3_verticalStrut_2 = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object3_verticalStrut_2 = new GridBagConstraints();
+        gbc_object3_verticalStrut_2.insets = new Insets(0, 0, 0, 5);
+        gbc_object3_verticalStrut_2.gridx = 0;
+        gbc_object3_verticalStrut_2.gridy = 2;
+        object3_historyObjectPane.add(object3_verticalStrut_2, gbc_object3_verticalStrut_2);
+        
+        object3_timeModifiedLabel = new JLabel("00:00:01 AM");
+        GridBagConstraints gbc_object3_timeModifiedLabel = new GridBagConstraints();
+        gbc_object3_timeModifiedLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object3_timeModifiedLabel.gridx = 1;
+        gbc_object3_timeModifiedLabel.gridy = 2;
+        object3_historyObjectPane.add(object3_timeModifiedLabel, gbc_object3_timeModifiedLabel);
+        
+		object4_historyObjectPane = new JPanel();
+        historyObjectHolderPane.add(object4_historyObjectPane);
+        GridBagLayout gbl_object4_historyObjectPane = new GridBagLayout();
+        gbl_object4_historyObjectPane.columnWidths = new int[]{0, 0, 288, 270, 147, 0, 0};
+        gbl_object4_historyObjectPane.rowHeights = new int[] {0, 0, 0, 0};
+        gbl_object4_historyObjectPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_object4_historyObjectPane.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        object4_historyObjectPane.setLayout(gbl_object4_historyObjectPane);
+        
+        object4_horizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object4_horizontalStrut = new GridBagConstraints();
+        gbc_object4_horizontalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object4_horizontalStrut.gridx = 0;
+        gbc_object4_horizontalStrut.gridy = 0;
+        object4_historyObjectPane.add(object4_horizontalStrut, gbc_object4_horizontalStrut);
+                
+        object4_fillerLabel = new JLabel("    ");
+        object4_fillerLabel.setOpaque(true);
+        object4_fillerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        object4_fillerLabel.setForeground(Color.WHITE);
+        object4_fillerLabel.setBackground(new Color(204, 204, 204));
+        GridBagConstraints gbc_object4_fillerLabel = new GridBagConstraints();
+        gbc_object4_fillerLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object4_fillerLabel.gridwidth = 4;
+        gbc_object4_fillerLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object4_fillerLabel.gridx = 1;
+        gbc_object4_fillerLabel.gridy = 0;
+        object4_historyObjectPane.add(object4_fillerLabel, gbc_object4_fillerLabel);
+        
+        object4_horizontalStrut_2 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object4_horizontalStrut_2 = new GridBagConstraints();
+        gbc_object4_horizontalStrut_2.insets = new Insets(0, 0, 5, 0);
+        gbc_object4_horizontalStrut_2.gridx = 5;
+        gbc_object4_horizontalStrut_2.gridy = 0;
+        object4_historyObjectPane.add(object4_horizontalStrut_2, gbc_object4_horizontalStrut_2);
+        
+        object4_verticalStrut = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object4_verticalStrut = new GridBagConstraints();
+        gbc_object4_verticalStrut.fill = GridBagConstraints.VERTICAL;
+        gbc_object4_verticalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object4_verticalStrut.gridx = 0;
+        gbc_object4_verticalStrut.gridy = 1;
+        object4_historyObjectPane.add(object4_verticalStrut, gbc_object4_verticalStrut);
+        
+        object4_dateModifiedLabel = new JLabel("0/0/1987");
+        GridBagConstraints gbc_object4_dateModifiedLabel = new GridBagConstraints();
+        gbc_object4_dateModifiedLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object4_dateModifiedLabel.gridx = 1;
+        gbc_object4_dateModifiedLabel.gridy = 1;
+        object4_historyObjectPane.add(object4_dateModifiedLabel, gbc_object4_dateModifiedLabel);
+        
+        object4_OldValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object4_OldValueScrollPane = new GridBagConstraints();
+        gbc_object4_OldValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object4_OldValueScrollPane.gridheight = 2;
+        gbc_object4_OldValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object4_OldValueScrollPane.gridx = 2;
+        gbc_object4_OldValueScrollPane.gridy = 1;
+        object4_historyObjectPane.add(object4_OldValueScrollPane, gbc_object4_OldValueScrollPane);
+        
+        object4_OldValueTextArea = new JTextArea();
+        object4_OldValueScrollPane.setViewportView(object4_OldValueTextArea);
+        object4_OldValueTextArea.setLineWrap(true);
+        object4_OldValueTextArea.setEnabled(true);
+        object4_OldValueTextArea.setEditable(true);
+        object4_OldValueTextArea.setText("");
+        
+        object4_NewValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object4_NewValueScrollPane = new GridBagConstraints();
+        gbc_object4_NewValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object4_NewValueScrollPane.gridheight = 2;
+        gbc_object4_NewValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object4_NewValueScrollPane.gridx = 3;
+        gbc_object4_NewValueScrollPane.gridy = 1;
+        object4_historyObjectPane.add(object4_NewValueScrollPane, gbc_object4_NewValueScrollPane);
+        
+        object4_NewValueTextArea_1 = new JTextArea();
+        object4_NewValueScrollPane.setViewportView(object4_NewValueTextArea_1);
+        object4_NewValueTextArea_1.setText("");
+        object4_NewValueTextArea_1.setLineWrap(true);
+        object4_NewValueTextArea_1.setEnabled(true);
+        object4_NewValueTextArea_1.setEditable(true);
+        
+        object4_ModifiedByLabel = new JLabel("System");
+        GridBagConstraints gbc_object4_ModifiedByLabel = new GridBagConstraints();
+        gbc_object4_ModifiedByLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object4_ModifiedByLabel.gridheight = 2;
+        gbc_object4_ModifiedByLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object4_ModifiedByLabel.gridx = 4;
+        gbc_object4_ModifiedByLabel.gridy = 1;
+        object4_historyObjectPane.add(object4_ModifiedByLabel, gbc_object4_ModifiedByLabel);
+        
+        object4_verticalStrut_2 = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object4_verticalStrut_2 = new GridBagConstraints();
+        gbc_object4_verticalStrut_2.insets = new Insets(0, 0, 0, 5);
+        gbc_object4_verticalStrut_2.gridx = 0;
+        gbc_object4_verticalStrut_2.gridy = 2;
+        object4_historyObjectPane.add(object4_verticalStrut_2, gbc_object4_verticalStrut_2);
+        
+        object4_timeModifiedLabel = new JLabel("00:00:01 AM");
+        GridBagConstraints gbc_object4_timeModifiedLabel = new GridBagConstraints();
+        gbc_object4_timeModifiedLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object4_timeModifiedLabel.gridx = 1;
+        gbc_object4_timeModifiedLabel.gridy = 2;
+        object4_historyObjectPane.add(object4_timeModifiedLabel, gbc_object4_timeModifiedLabel);
+        
+		object5_historyObjectPane = new JPanel();
+        historyObjectHolderPane.add(object5_historyObjectPane);
+        GridBagLayout gbl_object5_historyObjectPane = new GridBagLayout();
+        gbl_object5_historyObjectPane.columnWidths = new int[]{0, 0, 288, 270, 147, 0, 0};
+        gbl_object5_historyObjectPane.rowHeights = new int[] {0, 0, 0, 0};
+        gbl_object5_historyObjectPane.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_object5_historyObjectPane.rowWeights = new double[]{0.0, 0.0, 0.0, Double.MIN_VALUE};
+        object5_historyObjectPane.setLayout(gbl_object5_historyObjectPane);
+        
+        object5_horizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object5_horizontalStrut = new GridBagConstraints();
+        gbc_object5_horizontalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object5_horizontalStrut.gridx = 0;
+        gbc_object5_horizontalStrut.gridy = 0;
+        object5_historyObjectPane.add(object5_horizontalStrut, gbc_object5_horizontalStrut);
+                
+        object5_fillerLabel = new JLabel("    ");
+        object5_fillerLabel.setOpaque(true);
+        object5_fillerLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        object5_fillerLabel.setForeground(Color.WHITE);
+        object5_fillerLabel.setBackground(new Color(204, 204, 204));
+        GridBagConstraints gbc_object5_fillerLabel = new GridBagConstraints();
+        gbc_object5_fillerLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object5_fillerLabel.gridwidth = 4;
+        gbc_object5_fillerLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object5_fillerLabel.gridx = 1;
+        gbc_object5_fillerLabel.gridy = 0;
+        object5_historyObjectPane.add(object5_fillerLabel, gbc_object5_fillerLabel);
+        
+        object5_horizontalStrut_2 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_object5_horizontalStrut_2 = new GridBagConstraints();
+        gbc_object5_horizontalStrut_2.insets = new Insets(0, 0, 5, 0);
+        gbc_object5_horizontalStrut_2.gridx = 5;
+        gbc_object5_horizontalStrut_2.gridy = 0;
+        object5_historyObjectPane.add(object5_horizontalStrut_2, gbc_object5_horizontalStrut_2);
+        
+        object5_verticalStrut = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object5_verticalStrut = new GridBagConstraints();
+        gbc_object5_verticalStrut.fill = GridBagConstraints.VERTICAL;
+        gbc_object5_verticalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_object5_verticalStrut.gridx = 0;
+        gbc_object5_verticalStrut.gridy = 1;
+        object5_historyObjectPane.add(object5_verticalStrut, gbc_object5_verticalStrut);
+        
+        object5_dateModifiedLabel = new JLabel("0/0/1987");
+        GridBagConstraints gbc_object5_dateModifiedLabel = new GridBagConstraints();
+        gbc_object5_dateModifiedLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_object5_dateModifiedLabel.gridx = 1;
+        gbc_object5_dateModifiedLabel.gridy = 1;
+        object5_historyObjectPane.add(object5_dateModifiedLabel, gbc_object5_dateModifiedLabel);
+        
+        object5_OldValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object5_OldValueScrollPane = new GridBagConstraints();
+        gbc_object5_OldValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object5_OldValueScrollPane.gridheight = 2;
+        gbc_object5_OldValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object5_OldValueScrollPane.gridx = 2;
+        gbc_object5_OldValueScrollPane.gridy = 1;
+        object5_historyObjectPane.add(object5_OldValueScrollPane, gbc_object5_OldValueScrollPane);
+        
+        object5_OldValueTextArea = new JTextArea();
+        object5_OldValueScrollPane.setViewportView(object5_OldValueTextArea);
+        object5_OldValueTextArea.setLineWrap(true);
+        object5_OldValueTextArea.setEnabled(true);
+        object5_OldValueTextArea.setEditable(true);
+        object5_OldValueTextArea.setText("");
+        
+        object5_NewValueScrollPane = new JScrollPane();
+        GridBagConstraints gbc_object5_NewValueScrollPane = new GridBagConstraints();
+        gbc_object5_NewValueScrollPane.fill = GridBagConstraints.BOTH;
+        gbc_object5_NewValueScrollPane.gridheight = 2;
+        gbc_object5_NewValueScrollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_object5_NewValueScrollPane.gridx = 3;
+        gbc_object5_NewValueScrollPane.gridy = 1;
+        object5_historyObjectPane.add(object5_NewValueScrollPane, gbc_object5_NewValueScrollPane);
+        
+        object5_NewValueTextArea_1 = new JTextArea();
+        object5_NewValueScrollPane.setViewportView(object5_NewValueTextArea_1);
+        object5_NewValueTextArea_1.setText("");
+        object5_NewValueTextArea_1.setLineWrap(true);
+        object5_NewValueTextArea_1.setEnabled(true);
+        object5_NewValueTextArea_1.setEditable(true);
+        
+        object5_ModifiedByLabel = new JLabel("System");
+        GridBagConstraints gbc_object5_ModifiedByLabel = new GridBagConstraints();
+        gbc_object5_ModifiedByLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_object5_ModifiedByLabel.gridheight = 2;
+        gbc_object5_ModifiedByLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object5_ModifiedByLabel.gridx = 4;
+        gbc_object5_ModifiedByLabel.gridy = 1;
+        object5_historyObjectPane.add(object5_ModifiedByLabel, gbc_object5_ModifiedByLabel);
+        
+        object5_verticalStrut_2 = Box.createVerticalStrut(40);
+        GridBagConstraints gbc_object5_verticalStrut_2 = new GridBagConstraints();
+        gbc_object5_verticalStrut_2.insets = new Insets(0, 0, 0, 5);
+        gbc_object5_verticalStrut_2.gridx = 0;
+        gbc_object5_verticalStrut_2.gridy = 2;
+        object5_historyObjectPane.add(object5_verticalStrut_2, gbc_object5_verticalStrut_2);
+        
+        object5_timeModifiedLabel = new JLabel("00:00:01 AM");
+        GridBagConstraints gbc_object5_timeModifiedLabel = new GridBagConstraints();
+        gbc_object5_timeModifiedLabel.insets = new Insets(0, 0, 0, 5);
+        gbc_object5_timeModifiedLabel.gridx = 1;
+        gbc_object5_timeModifiedLabel.gridy = 2;
+        object5_historyObjectPane.add(object5_timeModifiedLabel, gbc_object5_timeModifiedLabel);
+        
 	}
 	
 	ActionListener exitAction = new ActionListener() {
@@ -5720,6 +6340,85 @@ public class MainWindow {
 	private JLabel otherDateCompletedLabel;
 	private JLabel otherBackcheckLabel;
 	private Component horizontalStrut_4;
+	private JScrollPane historyScrollPane;
+	private JPanel historyObjectHolderPane;
+	private JPanel historyObjectTitlePane;
+	private JPanel object1_historyObjectPane;
+	private JLabel modDateTimeTitleLabel;
+	private JLabel oldValueTitleLabel;
+	private JLabel newValueTitleLabel;
+	private JLabel modByTitleLabel;
+	private Component historyObjectTitleHorizontalStrut;
+	private Component historyObjectTitleVerticalStrut_2;
+	private Component historyObjectTitleVerticalStrut;
+	private JLabel object1_dateModifiedLabel;
+	private JLabel object1_timeModifiedLabel;
+	private JTextArea object1_OldValueTextArea;
+	private JTextArea object1_NewValueTextArea_1;
+	private JLabel object1_ModifiedByLabel;
+	private JLabel object1_fillerLabel;
+	private JScrollPane object1_OldValueScrollPane;
+	private JScrollPane object1_NewValueScrollPane;
+	private Component object1_horizontalStrut;
+	private Component object1_horizontalStrut_2;
+	private Component object1_verticalStrut;
+	private Component object1_verticalStrut_2;
+	
+	private JPanel object2_historyObjectPane;
+	private Component object2_horizontalStrut;
+	private JLabel object2_fillerLabel;
+	private Component object2_horizontalStrut_2;
+	private Component object2_verticalStrut;
+	private JLabel object2_dateModifiedLabel;
+	private JScrollPane object2_OldValueScrollPane;
+	private JTextArea object2_OldValueTextArea;
+	private JScrollPane object2_NewValueScrollPane;
+	private JTextArea object2_NewValueTextArea_1;
+	private JLabel object2_ModifiedByLabel;
+	private Component object2_verticalStrut_2;
+	private JLabel object2_timeModifiedLabel;
+	
+	private JPanel object3_historyObjectPane;
+	private Component object3_horizontalStrut;
+	private JLabel object3_fillerLabel;
+	private Component object3_horizontalStrut_2;
+	private Component object3_verticalStrut;
+	private JLabel object3_dateModifiedLabel;
+	private JScrollPane object3_OldValueScrollPane;
+	private JTextArea object3_OldValueTextArea;
+	private JScrollPane object3_NewValueScrollPane;
+	private JTextArea object3_NewValueTextArea_1;
+	private JLabel object3_ModifiedByLabel;
+	private Component object3_verticalStrut_2;
+	private JLabel object3_timeModifiedLabel;
+	
+	private JPanel object4_historyObjectPane;
+	private Component object4_horizontalStrut;
+	private JLabel object4_fillerLabel;
+	private Component object4_horizontalStrut_2;
+	private Component object4_verticalStrut;
+	private JLabel object4_dateModifiedLabel;
+	private JScrollPane object4_OldValueScrollPane;
+	private JTextArea object4_OldValueTextArea;
+	private JScrollPane object4_NewValueScrollPane;
+	private JTextArea object4_NewValueTextArea_1;
+	private JLabel object4_ModifiedByLabel;
+	private Component object4_verticalStrut_2;
+	private JLabel object4_timeModifiedLabel;
+	
+	private JPanel object5_historyObjectPane;
+	private Component object5_horizontalStrut;
+	private JLabel object5_fillerLabel;
+	private Component object5_horizontalStrut_2;
+	private Component object5_verticalStrut;
+	private JLabel object5_dateModifiedLabel;
+	private JScrollPane object5_OldValueScrollPane;
+	private JTextArea object5_OldValueTextArea;
+	private JScrollPane object5_NewValueScrollPane;
+	private JTextArea object5_NewValueTextArea_1;
+	private JLabel object5_ModifiedByLabel;
+	private Component object5_verticalStrut_2;
+	private JLabel object5_timeModifiedLabel;
 	
 }
 //CLASSPATH =.;C:\Program Files\Microsoft JDBC Driver 9.4 for SQL Server\sqljdbc_9.4\enu\mssql-jdbc-9.4.0.jre16.jar
