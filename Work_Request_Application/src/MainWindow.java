@@ -1,11 +1,16 @@
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,6 +35,8 @@ import java.awt.SystemColor;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import javax.swing.JSpinner;
+import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableModel;
 
 
 public class MainWindow {
@@ -37,6 +44,7 @@ public class MainWindow {
 	public JFrame frmWorkRequestApplication;
 	public static Connection connection;
 	public static Boolean isLocal;
+	public ArrayList<Map<String, Object>> workRequests;
 	
 	/**
 	 * Launch the application.
@@ -53,30 +61,31 @@ public class MainWindow {
 			}
 		});
 	}
-
+	
 	/**
 	 * Create the application.
 	 */
 	public MainWindow(Boolean isLocal) 
-	{
+	{	workRequests = new ArrayList<Map<String, Object>>();
 		initialize();
-//		sqlConnection(isLocal);
-//		try 
-//		{
-//			uspWRWorkRequest_ISUD(connection);
-//			System.out.println("wrISUD connected and run");
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			System.out.println("didn't grab wrISUD");
-//		}
-//		try {
-//			connection.close();
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			System.out.println("SQL Connection Failed to Close!");
-//			e.printStackTrace();
-//		}
+		sqlConnection(isLocal);
+		try 
+		{
+			workRequests = uspWRWorkRequest_ISUD(connection);
+			makeSelectionTable();
+			displayWR(0);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("didn't grab wrISUD");
+		}
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("SQL Connection Failed to Close!");
+			e.printStackTrace();
+		}
 	}
 	
 	public static boolean sqlConnection(Boolean isLocal)
@@ -88,7 +97,7 @@ public class MainWindow {
 		
 		if(isLocal)
 		{
-			String Localurl ="jdbc:sqlserver://localhost;databaseName=Pulse";
+			String Localurl ="jdbc:sqlserver://localhost;databaseName=Pulse;";
 			String Localuser = "sa";
 			String Localpassword = "1234567890";
 			
@@ -111,7 +120,8 @@ public class MainWindow {
 			String password = "1234567890";
 			try 
 			{
-				connection = DriverManager.getConnection(url,user,password);
+				System.out.println("Attempting to connect to: " + url);
+				connection = DriverManager.getConnection(url, user, password);
 				System.out.println("Connect to MS SQL Server on Azure. Good Job Dude.");
 				connected = true;
 			} 
@@ -123,6 +133,89 @@ public class MainWindow {
 		}
 		
 		return connected; 
+	}
+	
+	public static ArrayList<Map<String, Object>> uspWRWorkRequest_ISUD(Connection con) throws SQLException 
+	{
+		ArrayList<Map<String, Object>> paramArrayListMap = null;
+		
+		String query = "{call uspWRWorkRequest_ISUD}";
+		ResultSet rs;
+
+		
+	    try(CallableStatement pstmt = con.prepareCall(query); ) 
+	    {  
+	        rs = pstmt.executeQuery();  
+	        
+	        paramArrayListMap = new ArrayList<Map<String, Object>>();
+            while(rs.next())
+            {
+	            Map<String,Object> paramMap= new HashMap<>();
+	    		paramMap.put("AverageRate", rs.getDouble("AverageRate"));
+	    		paramMap.put("BranchAssignmentID", rs.getInt("BranchAssignmentID"));
+	    		paramMap.put("BranchID", rs.getInt("BranchID"));
+	    		paramMap.put("CompletionDate", rs.getTimestamp("CompletionDate"));
+	    		paramMap.put("DatePrepared", rs.getTimestamp("DatePrepared"));
+	    		paramMap.put("DraftDueDate", rs.getTimestamp("DraftDueDate"));
+	    		paramMap.put("FinancialInfoID", rs.getInt("FinancialInfoID"));
+	    		paramMap.put("FY", rs.getInt("FY"));
+	    		paramMap.put("ID", rs.getInt("ID"));
+	    		paramMap.put("ProjectInfoID", rs.getInt("ProjectInfoID"));
+	    		paramMap.put("ProjectManager", rs.getString("ProjectManager"));
+	    		paramMap.put("ProjectPulseID", rs.getInt("ProjectPulseID"));
+	    		paramMap.put("Requestor", rs.getString("Requestor"));
+	    		paramMap.put("StartDate", rs.getTimestamp("StartDate"));
+	    		paramMap.put("SubmissionDate", rs.getTimestamp("SubmissionDate"));
+	    		paramMap.put("Supervisor", rs.getString("Supervisor"));
+	    		paramMap.put("WRNumber", rs.getString("WRNumber"));
+	    		paramMap.put("WRStatusID", rs.getInt("WRStatusID"));
+	    		//paramMap.put("TYPE_ACTION", rs.getObject(19));
+	    		paramArrayListMap.add(paramMap);
+	    		paramMap.forEach((key, value) -> System.out.println(key + ": " + value));
+            }
+	        
+
+	    }
+		catch (SQLException e) 
+		{
+			System.out.println("Problem accessing uspWRWork_Request_ISUD...");
+			e.printStackTrace();
+		}
+	    
+	    return paramArrayListMap;
+	}
+	
+	private void makeSelectionTable()
+	{
+		
+		for(Map<String, Object> data : workRequests)
+		{
+			Vector<Object> dataRow = new Vector<Object>();
+			dataRow.add(checkData(data.get("WRNumber")).toString());
+			dataRow.add(checkData(data.get("ProjectManager")).toString());
+			dataRow.add(checkData(data.get("WRStatusID")).toString());
+			System.out.println("dataRow:" + dataRow);
+			tableModel.addRow(dataRow);
+			//fill table from arraylist<map<string, object>>
+		}
+	}
+	
+	private Object checkData(Object o)
+	{	
+		if(o == null)
+			return "null";
+		
+		return o;
+	}
+	
+	private void displayWR(int index)
+	{
+		viewWRNumTextField.setText(checkData(workRequests.get(index).get("WRNumber")).toString());
+		viewDatePrepTextField.setText(checkData(workRequests.get(index).get("DatePrepared")).toString());
+		viewOrgTextField.setText(checkData(workRequests.get(index).get("BranchID")).toString());
+		viewRequesterTextField.setText(checkData(workRequests.get(index).get("Requestor")).toString());
+		
+		return;
 	}
 
 	/**
@@ -139,18 +232,434 @@ public class MainWindow {
         
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         frmWorkRequestApplication.getContentPane().add(tabbedPane);
-               
-        newRequestPane = new JPanel();
-        tabbedPane.addTab("New Work Request", null, newRequestPane, null);
         
+        //view Work Requests
+		viewWRPane = new JPanel();
+        tabbedPane.addTab("Work Requests", null, viewWRPane, null);
+		viewWRPane.setLayout(new BoxLayout(viewWRPane, BoxLayout.Y_AXIS));
+        
+        viewWorkRequestsPane = new JTabbedPane(JTabbedPane.TOP);
+        viewWRPane.add(viewWorkRequestsPane);
+        
+        viewGeneralInfoPane = new JPanel();
+        viewWorkRequestsPane.addTab("General Information", null, viewGeneralInfoPane, null);
+        GridBagLayout gbl_viewGeneralInfoPane = new GridBagLayout();
+        gbl_viewGeneralInfoPane.columnWidths = new int[]{0, 0, 0, 273, 0, 0, 0};
+        gbl_viewGeneralInfoPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 47, 0, 0, 0};
+        gbl_viewGeneralInfoPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_viewGeneralInfoPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        viewGeneralInfoPane.setLayout(gbl_viewGeneralInfoPane);
+        
+        viewGeneralInfoVerticalStrut = Box.createVerticalStrut(20);
+        GridBagConstraints gbc_viewGeneralInfoVerticalStrut = new GridBagConstraints();
+        gbc_viewGeneralInfoVerticalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_viewGeneralInfoVerticalStrut.gridx = 1;
+        gbc_viewGeneralInfoVerticalStrut.gridy = 0;
+        viewGeneralInfoPane.add(viewGeneralInfoVerticalStrut, gbc_viewGeneralInfoVerticalStrut);
+        
+        viewGenInfoviewGenInfohorizontalStrut_1 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_viewGenInfoviewGenInfohorizontalStrut_1 = new GridBagConstraints();
+        gbc_viewGenInfoviewGenInfohorizontalStrut_1.insets = new Insets(0, 0, 5, 0);
+        gbc_viewGenInfoviewGenInfohorizontalStrut_1.gridx = 5;
+        gbc_viewGenInfoviewGenInfohorizontalStrut_1.gridy = 0;
+        viewGeneralInfoPane.add(viewGenInfoviewGenInfohorizontalStrut_1, gbc_viewGenInfoviewGenInfohorizontalStrut_1);
+        
+        viewGenInfohorizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_viewGenInfohorizontalStrut = new GridBagConstraints();
+        gbc_viewGenInfohorizontalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_viewGenInfohorizontalStrut.gridx = 0;
+        gbc_viewGenInfohorizontalStrut.gridy = 1;
+        viewGeneralInfoPane.add(viewGenInfohorizontalStrut, gbc_viewGenInfohorizontalStrut);
+        
+        viewWorkRequestNumLabel = new JLabel("Work Request Number");
+        GridBagConstraints gbc_viewWorkRequestNumLabel = new GridBagConstraints();
+        gbc_viewWorkRequestNumLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewWorkRequestNumLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewWorkRequestNumLabel.gridx = 2;
+        gbc_viewWorkRequestNumLabel.gridy = 1;
+        viewGeneralInfoPane.add(viewWorkRequestNumLabel, gbc_viewWorkRequestNumLabel);
+        
+        viewWRNumTextField = new JTextField();
+        GridBagConstraints gbc_viewWRNumTextField = new GridBagConstraints();
+        gbc_viewWRNumTextField.gridwidth = 2;
+        gbc_viewWRNumTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewWRNumTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewWRNumTextField.gridx = 3;
+        gbc_viewWRNumTextField.gridy = 1;
+        viewGeneralInfoPane.add(viewWRNumTextField, gbc_viewWRNumTextField);
+        viewWRNumTextField.setColumns(10);
+        
+        viewWRDatePreppedLabel = new JLabel("Date Prepared");
+        GridBagConstraints gbc_viewWRDatePreppedLabel = new GridBagConstraints();
+        gbc_viewWRDatePreppedLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewWRDatePreppedLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewWRDatePreppedLabel.gridx = 2;
+        gbc_viewWRDatePreppedLabel.gridy = 2;
+        viewGeneralInfoPane.add(viewWRDatePreppedLabel, gbc_viewWRDatePreppedLabel);
+        
+        viewDatePrepTextField = new JTextField();
+        viewDatePrepTextField.setColumns(10);
+        GridBagConstraints gbc_viewDatePrepTextField = new GridBagConstraints();
+        gbc_viewDatePrepTextField.gridwidth = 2;
+        gbc_viewDatePrepTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewDatePrepTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewDatePrepTextField.gridx = 3;
+        gbc_viewDatePrepTextField.gridy = 2;
+        viewGeneralInfoPane.add(viewDatePrepTextField, gbc_viewDatePrepTextField);
+        
+        viewPMforWRLabel = new JLabel("PM for this Work Request");
+        GridBagConstraints gbc_viewPMforWRLabel = new GridBagConstraints();
+        gbc_viewPMforWRLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewPMforWRLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPMforWRLabel.gridx = 2;
+        gbc_viewPMforWRLabel.gridy = 3;
+        viewGeneralInfoPane.add(viewPMforWRLabel, gbc_viewPMforWRLabel);
+        
+        viewIsPMCheckBox = new JCheckBox("");
+        GridBagConstraints gbc_viewIsPMCheckBox = new GridBagConstraints();
+        gbc_viewIsPMCheckBox.anchor = GridBagConstraints.WEST;
+        gbc_viewIsPMCheckBox.insets = new Insets(0, 0, 5, 5);
+        gbc_viewIsPMCheckBox.gridx = 3;
+        gbc_viewIsPMCheckBox.gridy = 3;
+        viewGeneralInfoPane.add(viewIsPMCheckBox, gbc_viewIsPMCheckBox);
+        
+        viewRequesterLabel = new JLabel("Requester");
+        GridBagConstraints gbc_viewRequesterLabel = new GridBagConstraints();
+        gbc_viewRequesterLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewRequesterLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewRequesterLabel.gridx = 2;
+        gbc_viewRequesterLabel.gridy = 4;
+        viewGeneralInfoPane.add(viewRequesterLabel, gbc_viewRequesterLabel);
+        
+        viewRequesterTextField = new JTextField();
+        viewRequesterTextField.setColumns(10);
+        GridBagConstraints gbc_viewRequesterTextField = new GridBagConstraints();
+        gbc_viewRequesterTextField.gridwidth = 2;
+        gbc_viewRequesterTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewRequesterTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewRequesterTextField.gridx = 3;
+        gbc_viewRequesterTextField.gridy = 4;
+        viewGeneralInfoPane.add(viewRequesterTextField, gbc_viewRequesterTextField);
+        
+        viewRequesterEmailLabel = new JLabel("Requster Email");
+        GridBagConstraints gbc_viewRequesterEmailLabel = new GridBagConstraints();
+        gbc_viewRequesterEmailLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewRequesterEmailLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewRequesterEmailLabel.gridx = 2;
+        gbc_viewRequesterEmailLabel.gridy = 5;
+        viewGeneralInfoPane.add(viewRequesterEmailLabel, gbc_viewRequesterEmailLabel);
+        
+        viewReqEmailTextField = new JTextField();
+        viewReqEmailTextField.setColumns(10);
+        GridBagConstraints gbc_viewReqEmailTextField = new GridBagConstraints();
+        gbc_viewReqEmailTextField.gridwidth = 2;
+        gbc_viewReqEmailTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewReqEmailTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewReqEmailTextField.gridx = 3;
+        gbc_viewReqEmailTextField.gridy = 5;
+        viewGeneralInfoPane.add(viewReqEmailTextField, gbc_viewReqEmailTextField);
+        
+        viewRequestPhoneLabel = new JLabel("Requester Phone");
+        GridBagConstraints gbc_viewRequestPhoneLabel = new GridBagConstraints();
+        gbc_viewRequestPhoneLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewRequestPhoneLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewRequestPhoneLabel.gridx = 2;
+        gbc_viewRequestPhoneLabel.gridy = 6;
+        viewGeneralInfoPane.add(viewRequestPhoneLabel, gbc_viewRequestPhoneLabel);
+        
+        viewReqPhoneTextField = new JTextField();
+        viewReqPhoneTextField.setColumns(10);
+        GridBagConstraints gbc_viewReqPhoneTextField = new GridBagConstraints();
+        gbc_viewReqPhoneTextField.gridwidth = 2;
+        gbc_viewReqPhoneTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewReqPhoneTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewReqPhoneTextField.gridx = 3;
+        gbc_viewReqPhoneTextField.gridy = 6;
+        viewGeneralInfoPane.add(viewReqPhoneTextField, gbc_viewReqPhoneTextField);
+        
+        viewOrganisationLabel = new JLabel("Organisation");
+        GridBagConstraints gbc_viewOrganisationLabel = new GridBagConstraints();
+        gbc_viewOrganisationLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewOrganisationLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewOrganisationLabel.gridx = 2;
+        gbc_viewOrganisationLabel.gridy = 7;
+        viewGeneralInfoPane.add(viewOrganisationLabel, gbc_viewOrganisationLabel);
+        
+        viewOrgTextField = new JTextField();
+        viewOrgTextField.setColumns(10);
+        GridBagConstraints gbc_viewOrgTextField = new GridBagConstraints();
+        gbc_viewOrgTextField.gridwidth = 2;
+        gbc_viewOrgTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewOrgTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewOrgTextField.gridx = 3;
+        gbc_viewOrgTextField.gridy = 7;
+        viewGeneralInfoPane.add(viewOrgTextField, gbc_viewOrgTextField);
+        
+        viewRequestedOnBehalfLabel = new JLabel("Requested on behalf of");
+        GridBagConstraints gbc_viewRequestedOnBehalfLabel = new GridBagConstraints();
+        gbc_viewRequestedOnBehalfLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewRequestedOnBehalfLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewRequestedOnBehalfLabel.gridx = 2;
+        gbc_viewRequestedOnBehalfLabel.gridy = 8;
+        viewGeneralInfoPane.add(viewRequestedOnBehalfLabel, gbc_viewRequestedOnBehalfLabel);
+        
+        viewOnBehalfTextField = new JTextField();
+        viewOnBehalfTextField.setColumns(10);
+        GridBagConstraints gbc_viewOnBehalfTextField = new GridBagConstraints();
+        gbc_viewOnBehalfTextField.gridwidth = 2;
+        gbc_viewOnBehalfTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewOnBehalfTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewOnBehalfTextField.gridx = 3;
+        gbc_viewOnBehalfTextField.gridy = 8;
+        viewGeneralInfoPane.add(viewOnBehalfTextField, gbc_viewOnBehalfTextField);
+        
+        viewProjectManagerLabel = new JLabel("Project Manager");
+        GridBagConstraints gbc_viewProjectManagerLabel = new GridBagConstraints();
+        gbc_viewProjectManagerLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewProjectManagerLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewProjectManagerLabel.gridx = 2;
+        gbc_viewProjectManagerLabel.gridy = 9;
+        viewGeneralInfoPane.add(viewProjectManagerLabel, gbc_viewProjectManagerLabel);
+        
+        viewPmTextField = new JTextField();
+        viewPmTextField.setColumns(10);
+        GridBagConstraints gbc_viewPmTextField = new GridBagConstraints();
+        gbc_viewPmTextField.gridwidth = 2;
+        gbc_viewPmTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPmTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewPmTextField.gridx = 3;
+        gbc_viewPmTextField.gridy = 9;
+        viewGeneralInfoPane.add(viewPmTextField, gbc_viewPmTextField);
+        
+        viewPMEmailLabel = new JLabel("Project Manager Email");
+        GridBagConstraints gbc_viewPMEmailLabel = new GridBagConstraints();
+        gbc_viewPMEmailLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewPMEmailLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPMEmailLabel.gridx = 2;
+        gbc_viewPMEmailLabel.gridy = 10;
+        viewGeneralInfoPane.add(viewPMEmailLabel, gbc_viewPMEmailLabel);
+        
+        viewPMEmailTextField = new JTextField();
+        viewPMEmailTextField.setColumns(10);
+        GridBagConstraints gbc_viewPMEmailTextField = new GridBagConstraints();
+        gbc_viewPMEmailTextField.gridwidth = 2;
+        gbc_viewPMEmailTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPMEmailTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewPMEmailTextField.gridx = 3;
+        gbc_viewPMEmailTextField.gridy = 10;
+        viewGeneralInfoPane.add(viewPMEmailTextField, gbc_viewPMEmailTextField);
+        
+        viewPMPhoneLabel = new JLabel("Project Manager Phone");
+        GridBagConstraints gbc_viewPMPhoneLabel = new GridBagConstraints();
+        gbc_viewPMPhoneLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewPMPhoneLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPMPhoneLabel.gridx = 2;
+        gbc_viewPMPhoneLabel.gridy = 11;
+        viewGeneralInfoPane.add(viewPMPhoneLabel, gbc_viewPMPhoneLabel);
+        
+        viewPMPhoneTextField = new JTextField();
+        viewPMPhoneTextField.setColumns(10);
+        GridBagConstraints gbc_viewPMPhoneTextField = new GridBagConstraints();
+        gbc_viewPMPhoneTextField.gridwidth = 2;
+        gbc_viewPMPhoneTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPMPhoneTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewPMPhoneTextField.gridx = 3;
+        gbc_viewPMPhoneTextField.gridy = 11;
+        viewGeneralInfoPane.add(viewPMPhoneTextField, gbc_viewPMPhoneTextField);
+        
+        viewWRStatusLabel = new JLabel("Work Request Status");
+        GridBagConstraints gbc_viewWRStatusLabel = new GridBagConstraints();
+        gbc_viewWRStatusLabel.anchor = GridBagConstraints.EAST;
+        gbc_viewWRStatusLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewWRStatusLabel.gridx = 2;
+        gbc_viewWRStatusLabel.gridy = 12;
+        viewGeneralInfoPane.add(viewWRStatusLabel, gbc_viewWRStatusLabel);
+        
+        viewWRStatusTextField = new JTextField();
+        viewWRStatusTextField.setColumns(10);
+        GridBagConstraints gbc_viewWRStatusTextField = new GridBagConstraints();
+        gbc_viewWRStatusTextField.gridwidth = 2;
+        gbc_viewWRStatusTextField.insets = new Insets(0, 0, 5, 5);
+        gbc_viewWRStatusTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewWRStatusTextField.gridx = 3;
+        gbc_viewWRStatusTextField.gridy = 12;
+        viewGeneralInfoPane.add(viewWRStatusTextField, gbc_viewWRStatusTextField);
+        
+        viewGeneralInfoHorizontalStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_viewGeneralInfoHorizontalStrut = new GridBagConstraints();
+        gbc_viewGeneralInfoHorizontalStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_viewGeneralInfoHorizontalStrut.gridx = 0;
+        gbc_viewGeneralInfoHorizontalStrut.gridy = 13;
+        viewGeneralInfoPane.add(viewGeneralInfoHorizontalStrut, gbc_viewGeneralInfoHorizontalStrut);
+        
+        viewPrevWRLabel = new JLabel("Previous WR Info");
+        GridBagConstraints gbc_viewPrevWRLabel = new GridBagConstraints();
+        gbc_viewPrevWRLabel.anchor = GridBagConstraints.NORTH;
+        gbc_viewPrevWRLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPrevWRLabel.gridx = 2;
+        gbc_viewPrevWRLabel.gridy = 13;
+        viewGeneralInfoPane.add(viewPrevWRLabel, gbc_viewPrevWRLabel);
+        
+        viewCopyfromPrevWRBtn = new JButton("Copy from Previous WR");
+        viewCopyfromPrevWRBtn.setEnabled(false);
+        GridBagConstraints gbc_viewCopyfromPrevWRBtn = new GridBagConstraints();
+        gbc_viewCopyfromPrevWRBtn.anchor = GridBagConstraints.NORTHWEST;
+        gbc_viewCopyfromPrevWRBtn.insets = new Insets(0, 0, 5, 5);
+        gbc_viewCopyfromPrevWRBtn.gridx = 3;
+        gbc_viewCopyfromPrevWRBtn.gridy = 13;
+        viewGeneralInfoPane.add(viewCopyfromPrevWRBtn, gbc_viewCopyfromPrevWRBtn);
+        
+        viewPrevWRCopyPane = new JPanel();
+        GridBagConstraints gbc_viewPrevWRCopyPane = new GridBagConstraints();
+        gbc_viewPrevWRCopyPane.insets = new Insets(0, 0, 5, 5);
+        gbc_viewPrevWRCopyPane.fill = GridBagConstraints.BOTH;
+        gbc_viewPrevWRCopyPane.gridx = 4;
+        gbc_viewPrevWRCopyPane.gridy = 13;
+        viewGeneralInfoPane.add(viewPrevWRCopyPane, gbc_viewPrevWRCopyPane);
+        viewPrevWRCopyPane.setLayout(new BoxLayout(viewPrevWRCopyPane, BoxLayout.Y_AXIS));
+        
+        viewWRNumLabel = new JLabel("Work Order Number: none");
+        viewPrevWRCopyPane.add(viewWRNumLabel);
+        
+        viewProjNameLabel = new JLabel("Project Name: none");
+        viewPrevWRCopyPane.add(viewProjNameLabel);
+        
+        viewP2NumLabel = new JLabel("P2 Number: none");
+        viewPrevWRCopyPane.add(viewP2NumLabel);
+        
+        viewDateAddedLabel = new JLabel("Date Added");
+        viewDateAddedLabel.setForeground(Color.DARK_GRAY);
+        viewDateAddedLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        viewDateAddedLabel.setBackground(new Color(176, 224, 230));
+        GridBagConstraints gbc_viewDateAddedLabel = new GridBagConstraints();
+        gbc_viewDateAddedLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewDateAddedLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewDateAddedLabel.gridx = 2;
+        gbc_viewDateAddedLabel.gridy = 14;
+        viewGeneralInfoPane.add(viewDateAddedLabel, gbc_viewDateAddedLabel);
+        
+        viewUserLabel = new JLabel("User");
+        viewUserLabel.setForeground(Color.DARK_GRAY);
+        viewUserLabel.setBackground(new Color(176, 224, 230));
+        viewUserLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        GridBagConstraints gbc_viewUserLabel = new GridBagConstraints();
+        gbc_viewUserLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewUserLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewUserLabel.gridx = 3;
+        gbc_viewUserLabel.gridy = 14;
+        viewGeneralInfoPane.add(viewUserLabel, gbc_viewUserLabel);
+        
+        viewRemarksLabel = new JLabel("Remark/Note");
+        viewRemarksLabel.setForeground(Color.DARK_GRAY);
+        viewRemarksLabel.setBackground(new Color(176, 224, 230));
+        viewRemarksLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        GridBagConstraints gbc_viewRemarksLabel = new GridBagConstraints();
+        gbc_viewRemarksLabel.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewRemarksLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_viewRemarksLabel.gridx = 4;
+        gbc_viewRemarksLabel.gridy = 14;
+        viewGeneralInfoPane.add(viewRemarksLabel, gbc_viewRemarksLabel);
+        
+        viewDateAddedTextField = new JTextField();
+        GridBagConstraints gbc_viewDateAddedTextField = new GridBagConstraints();
+        gbc_viewDateAddedTextField.insets = new Insets(0, 0, 0, 5);
+        gbc_viewDateAddedTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewDateAddedTextField.gridx = 2;
+        gbc_viewDateAddedTextField.gridy = 15;
+        viewGeneralInfoPane.add(viewDateAddedTextField, gbc_viewDateAddedTextField);
+        viewDateAddedTextField.setColumns(10);
+        
+        viewUserTextField = new JTextField();
+        GridBagConstraints gbc_viewUserTextField = new GridBagConstraints();
+        gbc_viewUserTextField.insets = new Insets(0, 0, 0, 5);
+        gbc_viewUserTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewUserTextField.gridx = 3;
+        gbc_viewUserTextField.gridy = 15;
+        viewGeneralInfoPane.add(viewUserTextField, gbc_viewUserTextField);
+        viewUserTextField.setColumns(10);
+        
+        viewNotesScollPane = new JScrollPane();
+        GridBagConstraints gbc_viewNotesScollPane = new GridBagConstraints();
+        gbc_viewNotesScollPane.fill = GridBagConstraints.BOTH;
+        gbc_viewNotesScollPane.insets = new Insets(0, 0, 0, 5);
+        gbc_viewNotesScollPane.gridx = 4;
+        gbc_viewNotesScollPane.gridy = 15;
+        viewGeneralInfoPane.add(viewNotesScollPane, gbc_viewNotesScollPane);
+        
+        viewNotesTextField = new JTextArea();
+        viewNotesScollPane.setViewportView(viewNotesTextField);
+        viewNotesTextField.setColumns(10);
+        
+        workRequestSelectionPane = new JPanel();
+        viewWRPane.add(workRequestSelectionPane);
+        GridBagLayout gbl_workRequestSelectionPane = new GridBagLayout();
+        gbl_workRequestSelectionPane.columnWidths = new int[]{0, 0, 0, 0};
+        gbl_workRequestSelectionPane.rowHeights = new int[]{0, 0, 0, 0};
+        gbl_workRequestSelectionPane.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_workRequestSelectionPane.rowWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
+        workRequestSelectionPane.setLayout(gbl_workRequestSelectionPane);
+        
+        workRequestVertSelectionStrut = Box.createVerticalStrut(20);
+        GridBagConstraints gbc_workRequestVertSelectionStrut = new GridBagConstraints();
+        gbc_workRequestVertSelectionStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_workRequestVertSelectionStrut.gridx = 1;
+        gbc_workRequestVertSelectionStrut.gridy = 0;
+        workRequestSelectionPane.add(workRequestVertSelectionStrut, gbc_workRequestVertSelectionStrut);
+        
+        workRequestSelectionStrut = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_workRequestSelectionStrut = new GridBagConstraints();
+        gbc_workRequestSelectionStrut.insets = new Insets(0, 0, 5, 5);
+        gbc_workRequestSelectionStrut.gridx = 0;
+        gbc_workRequestSelectionStrut.gridy = 1;
+        workRequestSelectionPane.add(workRequestSelectionStrut, gbc_workRequestSelectionStrut);
+                
+        String columnNames[] = {"WR Number", "Project Manager", "WR Status ID"};
+        tableModel = new DefaultTableModel(columnNames,0);
+        
+        scrollPane_7 = new JScrollPane();
+        GridBagConstraints gbc_scrollPane_7 = new GridBagConstraints();
+        gbc_scrollPane_7.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane_7.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane_7.gridx = 1;
+        gbc_scrollPane_7.gridy = 1;
+        workRequestSelectionPane.add(scrollPane_7, gbc_scrollPane_7);
+        workRequestsSelectionTable = new JTable(tableModel);
+        scrollPane_7.setViewportView(workRequestsSelectionTable);
+        workRequestsSelectionTable.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+        
+        workRequestSelectionStrut_1 = Box.createHorizontalStrut(20);
+        GridBagConstraints gbc_workRequestSelectionStrut_1 = new GridBagConstraints();
+        gbc_workRequestSelectionStrut_1.insets = new Insets(0, 0, 5, 0);
+        gbc_workRequestSelectionStrut_1.gridx = 2;
+        gbc_workRequestSelectionStrut_1.gridy = 1;
+        workRequestSelectionPane.add(workRequestSelectionStrut_1, gbc_workRequestSelectionStrut_1);
+        
+        workRequestVertSelectionStrut_1 = Box.createVerticalStrut(20);
+        GridBagConstraints gbc_workRequestVertSelectionStrut_1 = new GridBagConstraints();
+        gbc_workRequestVertSelectionStrut_1.insets = new Insets(0, 0, 0, 5);
+        gbc_workRequestVertSelectionStrut_1.gridx = 1;
+        gbc_workRequestVertSelectionStrut_1.gridy = 2;
+        workRequestSelectionPane.add(workRequestVertSelectionStrut_1, gbc_workRequestVertSelectionStrut_1);
+        
+        //end view Work Requests
+        
+        //view Analytics
         requestAnalyticsPane = new JPanel();
         tabbedPane.addTab("Analytics", null, requestAnalyticsPane, null);
+        
+        
+        //end Analytics
+        
+        //new Work Requests
+        newRequestPane = new JPanel();
+        tabbedPane.addTab("New Work Request", null, newRequestPane, null);
         newRequestPane.setLayout(new BoxLayout(newRequestPane, BoxLayout.Y_AXIS));
         
         newWorkRequestPane = new JTabbedPane(JTabbedPane.TOP);
         newRequestPane.add(newWorkRequestPane);
         
         remarksTextArea = new JTextArea();
+        
         remarkSavePane = new JPanel();
         newRequestPane.add(remarkSavePane);
         GridBagLayout gbl_remarkSavePane = new GridBagLayout();
@@ -5708,6 +6217,7 @@ public class MainWindow {
         gbc_object5_timeModifiedLabel.gridx = 1;
         gbc_object5_timeModifiedLabel.gridy = 2;
         object5_historyObjectPane.add(object5_timeModifiedLabel, gbc_object5_timeModifiedLabel);
+        //end new Work Requests
         
 	}
 	
@@ -5723,41 +6233,55 @@ public class MainWindow {
 	
 
 	
-	public static boolean uspWRWorkRequest_ISUD(Connection con) throws SQLException 
-	{
-		boolean called = false;
-		
-	    try(PreparedStatement pstmt = con.prepareStatement("{call uspWRWorkRequest_ISUD(?)"); ) 
-	    {  
 
-	    	//pstmt.setDouble(1, 1.1);
-	        ResultSet rs = pstmt.executeQuery();  
-
-	        while (rs.next()) 
-	        {  
-	        	System.out.println("AverageRate:");  
-	            System.out.println(rs.getString("AverageRate")); 
-	            /*System.out.println("EMPLOYEE:");  
-	            System.out.println(rs.getString("LastName") + ", " + rs.getString("FirstName"));  
-	            System.out.println("MANAGER:");  
-	            System.out.println(rs.getString("ManagerLastName") + ", " + rs.getString("ManagerFirstName"));  
-	            System.out.println();
-	            */  
-	        }  
-	        
-	        called = true;
-	    }
-		catch (SQLException e) 
-		{
-			System.out.println("Oops, there's an error connecting to Azure");
-			e.printStackTrace();
-		}
-	    
-	    return called;
-	}
+	//View Work Request Fields
+	private JPanel viewWRPane;
+	private JTabbedPane viewWorkRequestsPane;
+	private JPanel viewGeneralInfoPane;
+	private Component viewGeneralInfoVerticalStrut;
+	private Component viewGenInfoviewGenInfohorizontalStrut_1;
+	private Component viewGenInfohorizontalStrut;
+	private JLabel viewWorkRequestNumLabel;
+	private JTextField viewWRNumTextField;
+	private JLabel viewWRDatePreppedLabel;
+	private JTextField viewDatePrepTextField;
+	private JLabel viewPMforWRLabel;
+	private JCheckBox viewIsPMCheckBox;
+	private JLabel viewRequesterLabel;
+	private JTextField viewRequesterTextField;
+	private JLabel viewRequesterEmailLabel;
+	private JTextField viewReqEmailTextField;
+	private JLabel viewRequestPhoneLabel;
+	private JTextField viewReqPhoneTextField;
+	private JLabel viewOrganisationLabel;
+	private JTextField viewOrgTextField;
+	private JLabel viewRequestedOnBehalfLabel;
+	private JTextField viewOnBehalfTextField;
+	private JLabel viewProjectManagerLabel;
+	private JTextField viewPmTextField;
+	private JLabel viewPMEmailLabel;
+	private JTextField viewPMEmailTextField;
+	private JLabel viewPMPhoneLabel;
+	private JTextField viewPMPhoneTextField;
+	private JLabel viewWRStatusLabel;
+	private JTextField viewWRStatusTextField;
+	private Component viewGeneralInfoHorizontalStrut;
+	private JLabel viewPrevWRLabel;
+	private JButton viewCopyfromPrevWRBtn;
+	private JPanel viewPrevWRCopyPane;
+	private JLabel viewWRNumLabel;
+	private JLabel viewProjNameLabel;
+	private JLabel viewP2NumLabel;
+	private JLabel viewDateAddedLabel;
+	private JLabel viewUserLabel;
+	private JLabel viewRemarksLabel;
+	private JTextField viewDateAddedTextField;
+	private JTextField viewUserTextField;
+	private JScrollPane viewNotesScollPane;
+	private JTextArea viewNotesTextField;
+	private DefaultTableModel tableModel;
 	
-	
-
+	//New Work Request Fields
 	private JPanel newRequestPane;
 	private JPanel requestAnalyticsPane;
 	private JPanel generalInfoPane;
@@ -5767,7 +6291,6 @@ public class MainWindow {
 	private JPanel remarkSavePane;
 	private JTextArea remarksTextArea;
 	private JTabbedPane newWorkRequestPane;
-	private JPanel panel;
 	private JLabel lblNewLabel;
 	private Component verticalStrut;
 	private Component horizontalStrut;
@@ -6419,19 +6942,12 @@ public class MainWindow {
 	private JLabel object5_ModifiedByLabel;
 	private Component object5_verticalStrut_2;
 	private JLabel object5_timeModifiedLabel;
+	private JPanel workRequestSelectionPane;
+	private JTable workRequestsSelectionTable;
+	private Component workRequestSelectionStrut;
+	private Component workRequestSelectionStrut_1;
+	private Component workRequestVertSelectionStrut;
+	private Component workRequestVertSelectionStrut_1;
+	private JScrollPane scrollPane_7;
 	
 }
-//CLASSPATH =.;C:\Program Files\Microsoft JDBC Driver 9.4 for SQL Server\sqljdbc_9.4\enu\mssql-jdbc-9.4.0.jre16.jar
-/*
- * public class SQLDatabaseConnection { // Connect to your database. // Replace
- * server name, username, and password with your credentials public static void
- * main(String[] args) { String connectionUrl =
- * "jdbc:sqlserver://yourserver.database.windows.net:1433;" +
- * "database=AdventureWorks;" + "user=yourusername@yourserver;" +
- * "password=yourpassword;" + "encrypt=true;" + "trustServerCertificate=false;"
- * + "loginTimeout=30;";
- * 
- * try (Connection connection = DriverManager.getConnection(connectionUrl);) {
- * // Code here. } // Handle any errors that may have occurred. catch
- * (SQLException e) { e.printStackTrace(); } } }
- */
