@@ -72,6 +72,8 @@ public class MainWindow {
 		try 
 		{
 			workRequests = uspWRWorkRequest_ISUD(connection);
+			makeSelectionTable();
+			displayWR(0);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -135,7 +137,6 @@ public class MainWindow {
 	
 	public static ArrayList<Map<String, Object>> uspWRWorkRequest_ISUD(Connection con) throws SQLException 
 	{
-		boolean called = false;
 		ArrayList<Map<String, Object>> paramArrayListMap = null;
 		
 		String query = "{call uspWRWorkRequest_ISUD}";
@@ -173,7 +174,7 @@ public class MainWindow {
 	    		paramMap.forEach((key, value) -> System.out.println(key + ": " + value));
             }
 	        
-	        called = true;
+
 	    }
 		catch (SQLException e) 
 		{
@@ -186,15 +187,35 @@ public class MainWindow {
 	
 	private void makeSelectionTable()
 	{
-		String[] columnNames = {"WR Number", "Project Manager", "WR Status ID"};
-		tableModel.addColumn(columnNames);
+		
 		for(Map<String, Object> data : workRequests)
 		{
-			//tableModel.addRow(data.);
+			Vector<Object> dataRow = new Vector<Object>();
+			dataRow.add(checkData(data.get("WRNumber")).toString());
+			dataRow.add(checkData(data.get("ProjectManager")).toString());
+			dataRow.add(checkData(data.get("WRStatusID")).toString());
+			System.out.println("dataRow:" + dataRow);
+			tableModel.addRow(dataRow);
 			//fill table from arraylist<map<string, object>>
 		}
+	}
+	
+	private Object checkData(Object o)
+	{	
+		if(o == null)
+			return "null";
 		
+		return o;
+	}
+	
+	private void displayWR(int index)
+	{
+		viewWRNumTextField.setText(checkData(workRequests.get(index).get("WRNumber")).toString());
+		viewDatePrepTextField.setText(checkData(workRequests.get(index).get("DatePrepared")).toString());
+		viewOrgTextField.setText(checkData(workRequests.get(index).get("BranchID")).toString());
+		viewRequesterTextField.setText(checkData(workRequests.get(index).get("Requestor")).toString());
 		
+		return;
 	}
 
 	/**
@@ -592,15 +613,19 @@ public class MainWindow {
         gbc_workRequestSelectionStrut.gridy = 1;
         workRequestSelectionPane.add(workRequestSelectionStrut, gbc_workRequestSelectionStrut);
                 
-        tableModel = new DefaultTableModel();
+        String columnNames[] = {"WR Number", "Project Manager", "WR Status ID"};
+        tableModel = new DefaultTableModel(columnNames,0);
+        
+        scrollPane_7 = new JScrollPane();
+        GridBagConstraints gbc_scrollPane_7 = new GridBagConstraints();
+        gbc_scrollPane_7.fill = GridBagConstraints.BOTH;
+        gbc_scrollPane_7.insets = new Insets(0, 0, 5, 5);
+        gbc_scrollPane_7.gridx = 1;
+        gbc_scrollPane_7.gridy = 1;
+        workRequestSelectionPane.add(scrollPane_7, gbc_scrollPane_7);
         workRequestsSelectionTable = new JTable(tableModel);
+        scrollPane_7.setViewportView(workRequestsSelectionTable);
         workRequestsSelectionTable.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-        GridBagConstraints gbc_workRequestsSelectionTable = new GridBagConstraints();
-        gbc_workRequestsSelectionTable.insets = new Insets(0, 0, 5, 5);
-        gbc_workRequestsSelectionTable.fill = GridBagConstraints.BOTH;
-        gbc_workRequestsSelectionTable.gridx = 1;
-        gbc_workRequestsSelectionTable.gridy = 1;
-        workRequestSelectionPane.add(workRequestsSelectionTable, gbc_workRequestsSelectionTable);
         
         workRequestSelectionStrut_1 = Box.createHorizontalStrut(20);
         GridBagConstraints gbc_workRequestSelectionStrut_1 = new GridBagConstraints();
@@ -6923,5 +6948,6 @@ public class MainWindow {
 	private Component workRequestSelectionStrut_1;
 	private Component workRequestVertSelectionStrut;
 	private Component workRequestVertSelectionStrut_1;
+	private JScrollPane scrollPane_7;
 	
 }
