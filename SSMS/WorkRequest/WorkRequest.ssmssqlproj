@@ -43,6 +43,12 @@
           <AssociatedConnUserName />
           <FullPath>CostDistributionTab.sql</FullPath>
         </FileNode>
+        <FileNode Name="EnableSASetPW.sql">
+          <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
+          <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
+          <AssociatedConnUserName />
+          <FullPath>EnableSASetPW.sql</FullPath>
+        </FileNode>
         <FileNode Name="GeneralInformationTabDropDowns.sql">
           <AssociatedConnectionMoniker>8c91a03d-f9b4-46c0-a305-b5dcc79ff907:MUCHACHOLAPTOP:True</AssociatedConnectionMoniker>
           <AssociatedConnSrvName>MUCHACHOLAPTOP</AssociatedConnSrvName>
