@@ -1,3 +1,10 @@
+/********************************************************************************
+*   Application: Work Request Application
+*   	 Author: Team 3
+*       @author  Ian Oliver, David Leake, William Tchouente
+*   	 Course: CMSC 495-7381 Current Trends and Projects in Computer Science
+*   
+**********************************************************************************/
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,13 +46,13 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 
 
-public class MainWindow {
-
+public class MainWindow 
+{
 	public JFrame frmWorkRequestApplication;
 	public static Connection connection;
-	public static Boolean isLocal;
+	public static int connectionType;
 	public ArrayList<Map<String, Object>> workRequests;
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -53,7 +60,7 @@ public class MainWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow window = new MainWindow(isLocal);
+					MainWindow window = new MainWindow();
 					window.frmWorkRequestApplication.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -65,10 +72,16 @@ public class MainWindow {
 	/**
 	 * Create the application.
 	 */
-	public MainWindow(Boolean isLocal) 
-	{	workRequests = new ArrayList<Map<String, Object>>();
-		initialize();
-		sqlConnection(isLocal);
+	public MainWindow() 
+	{	
+		connectionType = 0; //local by default
+		sqlConnection();
+	}
+	
+	public MainWindow(int connectionType, Connection connection) 
+	{	
+		workRequests = new ArrayList<Map<String, Object>>();
+		createGui();
 		try 
 		{
 			workRequests = uspWRWorkRequest_ISUD(connection);
@@ -88,51 +101,25 @@ public class MainWindow {
 		}
 	}
 	
-	public static boolean sqlConnection(Boolean isLocal)
+	public static void sqlConnection()
 	{
-		boolean connected = false;
 		
-		if(isLocal == null)
-			isLocal = true;
+		String Localurl ="jdbc:sqlserver://localhost;databaseName=Pulse;";
+		String Localuser = "sa";
+		String Localpassword = "1234567890";
 		
-		if(isLocal)
+		try 
 		{
-			String Localurl ="jdbc:sqlserver://localhost;databaseName=Pulse;";
-			String Localuser = "sa";
-			String Localpassword = "1234567890";
-			
-			try 
-			{
-				System.out.println("Attempting to connect to: " + Localurl);
-				connection = DriverManager.getConnection(Localurl, Localuser, Localpassword);
-				System.out.println("Connect to MS SQL Server on Local Host. Good Job Dude.");
-			} 
-			catch (SQLException e) 
-			{
-				System.out.println("Oops, there's an error connecting to the LocalHost");
-				e.printStackTrace();
-			}
-		}
-		else
+			System.out.println("Attempting to connect to: " + Localurl);
+			connection = DriverManager.getConnection(Localurl, Localuser, Localpassword);
+			System.out.println("Connect to MS SQL Server on Local Host. Good Job Dude.");
+		} 
+		catch (SQLException e) 
 		{
-			String url ="jdbc:sqlserver://cmsc495team03.eastus.cloudapp.azure.com;databaseName=Pulse";
-			String user = "sa";
-			String password = "1234567890";
-			try 
-			{
-				System.out.println("Attempting to connect to: " + url);
-				connection = DriverManager.getConnection(url, user, password);
-				System.out.println("Connect to MS SQL Server on Azure. Good Job Dude.");
-				connected = true;
-			} 
-			catch (SQLException e) 
-			{
-				System.out.println("Oops, there's an error connecting to Azure");
-				e.printStackTrace();
-			}
+			System.out.println("Oops, there's an error connecting to the LocalHost");
+			e.printStackTrace();
 		}
-		
-		return connected; 
+				
 	}
 	
 	public static ArrayList<Map<String, Object>> uspWRWorkRequest_ISUD(Connection con) throws SQLException 
@@ -222,7 +209,7 @@ public class MainWindow {
 	 * Initialize the contents of the frame.
 	 */
 	
-	private void initialize() {
+	private void createGui() {
 		
 		frmWorkRequestApplication = new JFrame();
 		frmWorkRequestApplication.setTitle("Work Request Application");
