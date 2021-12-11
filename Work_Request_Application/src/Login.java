@@ -92,7 +92,7 @@ public class Login extends JFrame implements ActionListener
 				sqlServerAddressTextField.setEnabled(false);
 				sqlDatabaseNameTextField.setEnabled(false);
 				
-				if(sqlServerRadioBtn.isSelected())
+				if(sqlAzureRadioBtn.isSelected())
 					connectionType = 1;
 				else if(sqlLocalRadioBtn.isSelected())
 					connectionType = 0;
