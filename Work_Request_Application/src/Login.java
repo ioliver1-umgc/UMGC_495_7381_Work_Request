@@ -50,6 +50,12 @@ public class Login extends JFrame implements ActionListener
 	private ButtonGroup signinOptions;
 	private JButton submitBtn;
 	
+	//declaring vars for server connection
+	private static String url;
+	private static String user;
+	private static String password;
+	private static String databaseName;
+	
 	//Launch Application
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -100,9 +106,10 @@ public class Login extends JFrame implements ActionListener
 		}
 		else if (e.getSource() == submitBtn) //Action when submit button is hit
 		{
-			if(sqlConnection(connectionType))//If able to connect to sql database
+			if(sqlConnectionOpen(connectionType))//If able to connect to sql database
 			{
-				MainWindow window = new MainWindow(connectionType, connection);
+				String loginInfo = url + databaseName + ';' + user + ';' + password;
+				MainWindow window = new MainWindow(loginInfo, connectionType, connection);
 				window.frmWorkRequestApplication.setVisible(true);
 				setVisible(false);
 			}
@@ -114,19 +121,13 @@ public class Login extends JFrame implements ActionListener
 	}
 	
 	//attempt to connect to sql database
-	public static boolean sqlConnection(int connectedType)
+	public static boolean sqlConnectionOpen(int connectedType)
 	{		
 		boolean connected = false;
 		
 		//if garbage data then set to local connection type
 		if(connectedType > 2 || connectedType < 0)
 			connectedType = 0;
-		
-		//declaring vars for server connection
-		String url;
-		String user;
-		String password;
-		String databaseName;
 		
 		switch(connectedType)
 		{
@@ -138,7 +139,7 @@ public class Login extends JFrame implements ActionListener
 			
 			try {
 				System.out.println("Attempting to connect to: " + url + databaseName);
-				connection = DriverManager.getConnection(url, user, password);
+				connection = DriverManager.getConnection(url + databaseName, user, password);
 				System.out.println("Connect to MS SQL Server on Local Host. Good Job Dude.");
 				connected = true;
 			} catch (SQLException e) {
@@ -155,7 +156,7 @@ public class Login extends JFrame implements ActionListener
 
 			try {
 				System.out.println("Attempting to connect to: " + url + databaseName);
-				connection = DriverManager.getConnection(url, user, password);
+				connection = DriverManager.getConnection(url + databaseName, user, password);
 				System.out.println("Connect to MS SQL Server on Azure. Good Job Dude.");
 				connected = true;
 			} catch (SQLException e) {
@@ -172,7 +173,7 @@ public class Login extends JFrame implements ActionListener
 			
 			try {
 				System.out.println("Attempting to connect to: " + url + databaseName);
-				connection = DriverManager.getConnection(url, user, password);
+				connection = DriverManager.getConnection(url + databaseName, user, password);
 				System.out.println("Connect to MS SQL Server on Azure. Good Job Dude.");
 				connected = true;
 			} catch (SQLException e) {
