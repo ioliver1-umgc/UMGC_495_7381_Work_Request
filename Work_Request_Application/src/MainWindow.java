@@ -16,14 +16,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
@@ -42,10 +40,7 @@ import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.JCheckBox;
 import javax.swing.JTextArea;
-import javax.swing.JComboBox;
-import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 import javax.swing.BoxLayout;
 import javax.swing.JSpinner;
@@ -59,23 +54,17 @@ import org.jfree.data.gantt.Task;
 import org.jfree.data.gantt.TaskSeries;
 import org.jfree.data.gantt.TaskSeriesCollection;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
-
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.ImageIcon;
 
-public class MainWindow 
+public class MainWindow extends SQLHandler
 {
 	public JFrame frmWorkRequestApplication;
-	public static Connection connection;
-	public static int connectionType;
 	public static ArrayList<Map<String, Object>> workRequests;
 	public SortedMap<String, Object> sendMap;
 	public static int selectedRow;
-	private static String loginInfo;
 	static ChartPanel pieChartPanel;
 	
 
@@ -133,73 +122,6 @@ public class MainWindow
 		fillGUI(0);
 	}
 	
-	//Send Work Request to sql server
-	public void sendWRtoSQL() throws SQLException
-	{
-		saveWRtoMap();
-		
-		if(connection.isClosed())
-			sqlConnectionOpen();
-		
-		String sql = "INSERT INTO WRWorkRequest(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-		PreparedStatement pstmt = connection.prepareStatement(sql);
-		
-		System.out.println("Inserting new record into WRWorkRequest table...");
-		
-		/*1@TYPE_ACTION VARCHAR(25)='select ',   */ 
-		/*2@ID INT = 2,                          */ 
-		/*3@AverageRate DECIMAL =1.1,            */ 
-		/*4@BranchAssignmentID INT =2,           */ 
-		/*5@BranchID INT =2 ,                    */ 
-		/*6@CompletionDate DATETIME2='',         */ pstmt.setTimestamp(3, Timestamp.valueOf(sendMap.get("CompletionDate").toString()));
-		/*7@DatePrepared DATETIME2='',           */ pstmt.setString(7, sendMap.get("DatePrepared").toString());
-		/*8@DraftDueDate DATETIME='',            */ pstmt.setString(8, sendMap.get("DraftDueDate").toString());
-		/*9@FinancialInfoID INT =2,              */
-		/*10@FY INT =2021,                        */
-		/*11@ProjectInfoID INT = 2,               */
-		/*12@ProjectManager VARCHAR(255)='PM',    */ pstmt.setString(8, sendMap.get("ProjectManager").toString());
-		/*13@ProjectPulseID INT =2,               */
-		/*14@Requestor VARCHAR(255) ='me',        */ pstmt.setString(17, sendMap.get("Requestor").toString());
-		/*15@StartDate DATETIME2='',              */ pstmt.setTimestamp(15, Timestamp.valueOf(sendMap.get("StartDate").toString()));
-		/*16@SubmissionDate DATETIME2='',         */ 
-		/*17@Supervisor VARCHAR(255)='superivsor',*/ pstmt.setString(17, sendMap.get("Supervisor").toString());
-		/*18@WRNumber VARCHAR(255)='wrnum',       */ pstmt.setString(18, sendMap.get("WRNumber").toString());
-		/*19@WRStatusID INT=2                     */ pstmt.setInt(19, (int) sendMap.get("WRStatusID"));
-		pstmt.execute();
-		
-		
-		sql = "INSERT INTO WRProjectInfo";
-		pstmt = connection.prepareStatement(sql);
-		
-		System.out.println("Inserting new record into WRWorkRequest table...");
-		
-		/*1@Background VARCHAR(max)='',       */
-		/*2@BranchId INT=1,                   */
-		/*3@ContinentID INT=1,                */
-		/*4@ContractNumber VARCHAR(255)='',   */
-		/*5@DirWR INT=1,                      */
-		/*6@FundSourceID INT=1,               */
-		/*7@FundSourceText VARCHAR(255)='fun',*/ pstmt.setString(17, sendMap.get("FundSourceText").toString());
-		/*8@InstallationID INT=1,             */
-		/*9@LocationID INT=1,                 */
-		/*10@MilitarySiteID INT=1,             */
-		/*11@OrgCode VARCHAR(255)='org',       */
-		/*12@ProgramYear VARCHAR(255)='2021',  */ pstmt.setString(12, sendMap.get("ProgramYear").toString());
-		/*13@ProjectName VARCHAR(255)='name',  */ pstmt.setString(13, sendMap.get("ProjectName").toString());
-		/*14@ProjectNotes Varchar(max)='notes',*/
-		/*15@ProjectNumber VARCHAR(255)='1',   */ pstmt.setInt(15, (int) sendMap.get("ProjectNumber"));
-		/*16@PulseCityRegionID INT=2,          */
-		/*17@PulseCountryID INT =2,            */
-		/*18@SectionId INT =1,                 */
-		/*19@Site VARCHAR(255)='site',         */
-		/*20@WRID INT=2,                       */
-		/*21@TYPE_ACTION VARCHAR(25)='select'  */
-		pstmt.execute();
-		
-		pstmt.close();
-		sqlConnectionClose();
-		
-	}
 	
 	//save data in field to internal data structure
 	public boolean saveWRtoMap()
@@ -228,194 +150,7 @@ public class MainWindow
 		
 		return saved;
 	}
-	
-	//Generates random values for cost distribution fields
-	public static Map<String,Object> generateCostDistFields()
-	{
-		SortedMap<String,Object> costMap = new TreeMap<String,Object>();
 		
-		costMap.put("costCivil", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costArchitectural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costStructural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costForceProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costMechanical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costFireProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costElectrical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costCommunications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costLEED", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costEnvironmental", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costCostEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costGeotechnical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costAEContracting", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costValueEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costTranslator", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costSpecifications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costOther", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		
-		costMap.put("costHoursCivil", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursArchitectural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursStructural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursForceProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursMechanical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursFireProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursElectrical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursCommunications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursLEED", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursEnvironmental", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursCostEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursGeotechnical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursAEContracting", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursValueEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursTranslator", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursSpecifications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		costMap.put("costHoursOther", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
-		
-		return costMap;
-	}
-	
-	
-	//create a SQL connection to localhost
-	public static Connection sqlConnectionOpen()
-	{
-		//default values for server login
-		String localurl = "jdbc:sqlserver://localhost;databaseName=Pulse;";
-		String localuser = "sa";
-		String localpassword = "1234567890";
-		
-		//if there is login info use that instead of default
-		if(loginInfo != null && !loginInfo.isEmpty())
-		{
-			String[] sArray = loginInfo.split(";");
-			localurl = sArray[0] + ';' + sArray[1] + ';';
-			localuser = sArray[2];
-			localpassword = sArray[3];
-		}
-		
-		//try to connection
-		try 
-		{
-			System.out.println("Attempting to connect to: " + localurl);
-			connection = DriverManager.getConnection(localurl, localuser, localpassword);
-			System.out.println("Connect to MS SQL Server on Local Host. Good Job Dude.");
-		} 
-		catch (SQLException e) 
-		{
-			System.out.println("Oops, there's an error connecting to the LocalHost");
-			e.printStackTrace();
-		}
-		
-		//return connection status
-		return connection;
-				
-	}
-	
-	//Close sql connection
-	public static void sqlConnectionClose()
-	{
-		try 
-		{
-			connection.close();
-		} catch (SQLException e) {
-			System.out.println("SQL Connection Failed to Close!");
-			e.printStackTrace();
-		}
-	}
-
-	//get data from the sql server and put in internal data structure
-	public static ArrayList<Map<String, Object>> getDataFromSQL(Connection con) throws SQLException 
-	{
-		//if no active connection, open one
-		if(con.isClosed())
-			con = sqlConnectionOpen();
-		
-		//set connection to newly opened con
-		if(connection != con)
-			connection = con;
-		
-		ArrayList<Map<String, Object>> paramArrayListMap = null;
-		
-		String query = "select * from [dbo].[WRWorkRequest]";
-		String query2 = "select * from [dbo].[WRProjectInfo]";
-		
-		ResultSet rs;
-		ResultSet rs2;
-		CallableStatement cstmt;
-
-		System.out.println("Calling uspWRWorkRequest_ISUD Select...");
-		cstmt = con.prepareCall(query); 
-    	rs = cstmt.executeQuery();
-    	System.out.println("uspWRWorkRequest_ISUD Complete...");
-    	
-    	System.out.println("Calling uspWRProjectInfo_ISUD Select...");
-    	cstmt = con.prepareCall(query2);
-    	rs2 = cstmt.executeQuery();
-    	System.out.println("uspWRProjectInfo_ISUD Complete...");
-
-        paramArrayListMap = new ArrayList<Map<String, Object>>();
-        while(rs.next() && rs2.next())
-        {
-            SortedMap<String,Object> paramMap = new TreeMap<String,Object>();
-            
-            //Get data from WRWorkRequest
-    		paramMap.put("AverageRate", rs.getDouble("AverageRate"));
-    		paramMap.put("BranchAssignmentID", rs.getInt("BranchAssignmentID"));
-    		paramMap.put("BranchID", rs.getInt("BranchID"));
-    		paramMap.put("CompletionDate", rs.getTimestamp("CompletionDate"));
-    		paramMap.put("DatePrepared", rs.getTimestamp("DatePrepared"));
-    		paramMap.put("DraftDueDate", rs.getTimestamp("DraftDueDate"));
-    		paramMap.put("FinancialInfoID", rs.getInt("FinancialInfoID"));
-    		paramMap.put("FY", rs.getInt("FY"));
-    		paramMap.put("ID", rs.getInt("ID"));
-    		paramMap.put("ProjectInfoID", rs.getInt("ProjectInfoID"));
-    		paramMap.put("ProjectManager", rs.getString("ProjectManager"));
-    		paramMap.put("ProjectPulseID", rs.getInt("ProjectPulseID"));
-    		paramMap.put("Requestor", rs.getString("Requestor"));
-    		paramMap.put("StartDate", rs.getTimestamp("StartDate"));
-    		paramMap.put("SubmissionDate", rs.getTimestamp("SubmissionDate"));
-    		paramMap.put("Supervisor", rs.getString("Supervisor"));
-    		paramMap.put("WRNumber", rs.getString("WRNumber"));
-    		paramMap.put("WRStatusID", rs.getInt("WRStatusID"));
-    		
-    		//Get data from WRProjectInfo
-        	paramMap.put("Background", rs2.getString("Background"));
-        	paramMap.put("BranchId", rs2.getInt("BranchId"));
-        	paramMap.put("ContinentID", rs2.getInt("ContinentID"));
-        	paramMap.put("ContractNumber", rs2.getString("ContractNumber"));
-        	paramMap.put("DirWR", rs2.getInt("DirWR"));
-        	paramMap.put("FundSourceID", rs2.getInt("FundSourceID"));
-        	paramMap.put("FundSourceText", rs2.getString("FundSourceText"));
-        	paramMap.put("InstallationID", rs2.getInt("InstallationID"));
-        	paramMap.put("LocationID", rs2.getInt("LocationID"));
-        	paramMap.put("MilitarySiteID", rs2.getInt("MilitarySiteID"));
-        	paramMap.put("OrgCode", rs2.getString("OrgCode"));
-        	paramMap.put("ProgramYear", rs2.getString("ProgramYear"));
-        	paramMap.put("ProjectName", rs2.getString("ProjectName"));
-        	paramMap.put("ProjectNotes", rs2.getString("ProjectNotes"));
-        	paramMap.put("ProjectNumber", rs2.getInt("ProjectNumber"));
-        	paramMap.put("PulseCityRegionID", rs2.getInt("PulseCityRegionID"));
-        	paramMap.put("PulseCountryID", rs2.getInt("PulseCountryID"));
-        	paramMap.put("SectionId", rs2.getInt("SectionId"));
-        	paramMap.put("Site", rs2.getString("Site"));
-        	paramMap.put("WRID", rs2.getInt("WRID"));
-        	
-        	//Generates cost distribution fields for analysis graph data
-        	paramMap.putAll(generateCostDistFields());
-        	
-        	//Add paramMap to the arraylist for each record
-    		paramArrayListMap.add(paramMap);
-    		paramMap.forEach((key, value) -> System.out.println(key + ": " + value));
-    		System.out.println("ArrayListSize: " + paramArrayListMap.size());
-        }
-        
-        //close connection
-        rs.close();
-        rs2.close();
-        cstmt.close();
-        sqlConnectionClose();
-        
-	    return paramArrayListMap;
-	}
-	
 	private void makeSelectionTable()
 	{
 		
@@ -2902,7 +2637,11 @@ public class MainWindow
 			if(e.getSource() == submitWorkRequestBtn)
 			{
 				try {
-					sendWRtoSQL();
+					
+					//saveWRtoMap(); 			//save the data before sending
+					sendWRtoSQLPreparedStatmentTest();
+					//sendWRtoSQLTable(sendMap);
+					//sendWRtoSQLPreparedStatment(sendMap);	//send the data to the 
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -3190,4 +2929,467 @@ public class MainWindow
 	private JButton pieChartButton;
 	private JLabel pieChartLabel;
 	private JLabel gnattChartLabel;
+}
+
+class SQLHandler
+{
+	public static Connection connection;
+	public static int connectionType;
+	protected static String loginInfo;
+	
+	
+	//Send Work Request to sql server to the table
+//	public void sendWRtoSQLTableTest() throws SQLException
+//	{
+//		if(connection.isClosed())
+//			sqlConnectionOpen();
+//		
+//		String sql = "INSERT INTO WRWorkRequest";
+//		Statement stmt = connection.createStatement();
+//		
+//		System.out.println("Inserting new record into WRWorkRequest table...");
+//		sql += " VALUES ("
+//		/*1@TYPE_ACTION VARCHAR(25)='select ',   */ + "''"
+//		/*2@ID INT = 2,                          */ + ", "
+//		/*3@AverageRate DECIMAL =1.1,            */ + ", 0"
+//		/*4@BranchAssignmentID INT =2,           */ + ", 0"
+//		/*5@BranchID INT =2 ,                    */ + ", 0"
+//		/*6@CompletionDate DATETIME2='',         */ + ", '2021-12-12 00:00:01'"
+//		/*7@DatePrepared DATETIME2='',           */ + ", '2021-12-12 00:00:02'"
+//		/*8@DraftDueDate DATETIME='',            */ + ", '2021-12-12 00:00:03'"
+//		/*9@FinancialInfoID INT =2,              */ + ", 0"
+//		/*10@FY INT =2021,                        */ + ", 0"
+//		/*11@ProjectInfoID INT = 2,               */ + ", 0"
+//		/*12@ProjectManager VARCHAR(255)='PM',    */ + ", 'Dave'"
+//		/*13@ProjectPulseID INT =2,               */ + ", 0"
+//		/*14@Requestor VARCHAR(255) ='me',        */ + ", 'Ian'"
+	//		/*15@StartDate DATETIME2='',              */ + ", '2021-12-12 00:00:04'"
+	//	/*16@SubmissionDate DATETIME2='',         */ + ", 0"
+	//	/*17@Supervisor VARCHAR(255)='superivsor',*/ + ", 'Will'"
+	//	/*18@WRNumber VARCHAR(255)='wrnum',       */ + ", '13'"
+	//	/*19@WRStatusID INT=2                     */ + ", 11"
+	//	+ ")";
+	//		stmt.executeUpdate(sql);
+	//		
+	//	sql = "INSERT INTO WRProjectInfo";
+	//	stmt = connection.prepareStatement(sql);
+	//		
+	//	System.out.println("Inserting new record into WRProjectInfo table...");
+	//	sql += " VALUES ("
+	//	/*1@Background VARCHAR(max)='',       */ + "''"
+	//	/*2@BranchId INT=1,                   */ + ", 0"
+	//	/*3@ContinentID INT=1,                */ + ", 0"
+	//	/*4@ContractNumber VARCHAR(255)='',   */ + "''"
+	//	/*5@DirWR INT=1,                      */ + ", 0"
+	//	/*6@FundSourceID INT=1,               */ + ", 0"
+	//	/*7@FundSourceText VARCHAR(255)='fun',*/ + ", 'fun'"
+	//	/*8@InstallationID INT=1,             */ + ", 0"
+	//	/*9@LocationID INT=1,                 */ + ", 0"
+	//	/*10@MilitarySiteID INT=1,             */ + ", 0"
+	//	/*11@OrgCode VARCHAR(255)='org',       */ + ", 0"
+	//	/*12@ProgramYear VARCHAR(255)='2021',  */ + ", '2021'"
+	//	/*13@ProjectName VARCHAR(255)='name',  */ + ", 'ProjectName'"
+	//	/*14@ProjectNotes Varchar(max)='notes',*/ + ", 0"
+	//	/*15@ProjectNumber VARCHAR(255)='1',   */ + ", '1111'"
+	//	/*16@PulseCityRegionID INT=2,          */ + ", 0"
+	//	/*17@PulseCountryID INT =2,            */ + ", 0"
+	//	/*18@SectionId INT =1,                 */ + ", 0"
+	//	/*19@Site VARCHAR(255)='site',         */ + "''"
+	//	/*20@WRID INT=2,                       */ + ", 0"
+	//	/*21@TYPE_ACTION VARCHAR(25)='select'  */ + "''"
+	//	+ ")";
+	//	stmt.executeUpdate(sql);
+	//	
+	//	stmt.close();
+	//	sqlConnectionClose();
+	//	System.out.println("Records updated...");
+	//}
+	
+	//Send Work Request to sql server to the table
+//	public void sendWRtoSQLTable(SortedMap<String, Object> sendMap) throws SQLException
+//	{
+//		if(connection.isClosed())
+//			sqlConnectionOpen();
+//		
+//		String sql = "INSERT INTO WRWorkRequest";
+//		Statement stmt = connection.createStatement();
+//		
+//		System.out.println("Inserting new record into WRWorkRequest table...");
+//		sql = sql + " ("
+//		/*1@TYPE_ACTION VARCHAR(25)='select ',   */ + "''"
+//		/*2@ID INT = 2,                          */ + ", 0"
+//		/*3@AverageRate DECIMAL =1.1,            */ + ", 0"
+//		/*4@BranchAssignmentID INT =2,           */ + ", 0"
+//		/*5@BranchID INT =2 ,                    */ + ", 0"
+//		/*6@CompletionDate DATETIME2='',         */ + ", " + Timestamp.valueOf(sendMap.get("CompletionDate").toString())
+//		/*7@DatePrepared DATETIME2='',           */ + ", " + Timestamp.valueOf(sendMap.get("DatePrepared").toString())
+//		/*8@DraftDueDate DATETIME='',            */ + ", " + Timestamp.valueOf(sendMap.get("DraftDueDate").toString())
+//		/*9@FinancialInfoID INT =2,              */ + ", 0"
+//		/*10@FY INT =2021,                        */ + ", 0"
+//		/*11@ProjectInfoID INT = 2,               */ + ", 0"
+//		/*12@ProjectManager VARCHAR(255)='PM',    */ + ", '" + sendMap.get("ProjectManager").toString() + "'"
+//		/*13@ProjectPulseID INT =2,               */ + ", 0"
+//		/*14@Requestor VARCHAR(255) ='me',        */ + ", '" + sendMap.get("Requestor").toString() + "'"
+//		/*15@StartDate DATETIME2='',              */ + ", " + Timestamp.valueOf(sendMap.get("StartDate").toString())
+//		/*16@SubmissionDate DATETIME2='',         */ + ", 0"
+//		/*17@Supervisor VARCHAR(255)='superivsor',*/ + ", '" + sendMap.get("Supervisor").toString() + "'"
+//		/*18@WRNumber VARCHAR(255)='wrnum',       */ + ", '" + sendMap.get("WRNumber").toString() + "'"
+//		/*19@WRStatusID INT=2                     */ + ", " + sendMap.get("WRStatusID");
+//		stmt.executeUpdate(sql);
+//		
+//		sql = "INSERT INTO WRProjectInfo";
+//		stmt = connection.prepareStatement(sql);
+//		
+//		System.out.println("Inserting new record into WRProjectInfo table...");
+//		sql = sql + " ("
+//		/*1@Background VARCHAR(max)='',       */ + "''"
+//		/*2@BranchId INT=1,                   */ + ", 0"
+//		/*3@ContinentID INT=1,                */ + ", 0"
+//		/*4@ContractNumber VARCHAR(255)='',   */ + "''"
+//		/*5@DirWR INT=1,                      */ + ", 0"
+//		/*6@FundSourceID INT=1,               */ + ", 0"
+//		/*7@FundSourceText VARCHAR(255)='fun',*/ + ", '" + sendMap.get("FundSourceText").toString() + "'"
+//		/*8@InstallationID INT=1,             */ + ", 0"
+//		/*9@LocationID INT=1,                 */ + ", 0"
+//		/*10@MilitarySiteID INT=1,             */ + ", 0"
+//		/*11@OrgCode VARCHAR(255)='org',       */ + ", 0"
+//		/*12@ProgramYear VARCHAR(255)='2021',  */ + ", '" + sendMap.get("ProgramYear").toString() + "'"
+//		/*13@ProjectName VARCHAR(255)='name',  */ + ", '" + sendMap.get("ProjectName").toString() + "'"
+//		/*14@ProjectNotes Varchar(max)='notes',*/ + ", 0"
+//		/*15@ProjectNumber VARCHAR(255)='1',   */ + ", '" + sendMap.get("ProjectNumber") + "'"
+//		/*16@PulseCityRegionID INT=2,          */ + ", 0"
+//		/*17@PulseCountryID INT =2,            */ + ", 0"
+//		/*18@SectionId INT =1,                 */ + ", 0"
+//		/*19@Site VARCHAR(255)='site',         */ + "''"
+//		/*20@WRID INT=2,                       */ + ", 0"
+//		/*21@TYPE_ACTION VARCHAR(25)='select'  */ + "''";
+//		stmt.executeUpdate(sql);
+//		
+//		stmt.close();
+//		sqlConnectionClose();
+//		System.out.println("Records updated...");
+//	}
+	
+	//Send Work Request to sql server using prepared statment
+	public void sendWRtoSQLPreparedStatmentTest() throws SQLException
+	{
+		if(connection.isClosed())
+			sqlConnectionOpen();
+		
+		String sql = "INSERT INTO WRWorkRequest "
+				+ "(CompletionDate, DatePrepared, DraftDueDate, ProjectInfoID, ProjectManager, Requestor, StartDate, Supervisor, WRNumber, WRSTatusID) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?)";
+		PreparedStatement pstmt = connection.prepareStatement(sql);
+		
+		System.out.println("Inserting new record into WRWorkRequest table...");
+		
+		/*1@TYPE_ACTION VARCHAR(25)='select ',   */ 
+		/*2@ID INT = 2,                          */ 
+		/*3@AverageRate DECIMAL =1.1,            */ 
+		/*4@BranchAssignmentID INT =2,           */ 
+		/*5@BranchID INT =2 ,                    */ 
+		/*6@CompletionDate DATETIME2='',         */ pstmt.setTimestamp(1, Timestamp.valueOf("2021-12-12 00:00:03"));
+		/*7@DatePrepared DATETIME2='',           */ pstmt.setTimestamp(2, Timestamp.valueOf("2021-12-12 00:00:03"));
+		/*8@DraftDueDate DATETIME='',            */ pstmt.setTimestamp(3, Timestamp.valueOf("2021-12-12 00:00:03"));
+		/*9@FinancialInfoID INT =2,              */
+		/*10@FY INT =2021,                        */
+		/*11@ProjectInfoID INT = 2,               */ pstmt.setInt(4, 222);
+		/*12@ProjectManager VARCHAR(255)='PM',    */ pstmt.setString(5,"ProjectManager");
+		/*13@ProjectPulseID INT =2,               */
+		/*14@Requestor VARCHAR(255) ='me',        */ pstmt.setString(6, "Requestor");
+		/*15@StartDate DATETIME2='',              */ pstmt.setTimestamp(7, Timestamp.valueOf("2021-12-12 00:00:03"));
+		/*16@SubmissionDate DATETIME2='',         */ 
+		/*17@Supervisor VARCHAR(255)='superivsor',*/ pstmt.setString(8, "Supervisor");
+		/*18@WRNumber VARCHAR(255)='wrnum',       */ pstmt.setString(9, "WRNumber");
+		/*19@WRStatusID INT=2                     */ pstmt.setInt(10, 13);
+		pstmt.executeUpdate();
+		
+		
+		sql = "INSERT INTO WRProjectInfo "
+		+ "(FundSourceText, ProgramYear, ProjectName, ProjectNumber) "
+		+ "VALUES (?,?,?,?)";
+		pstmt = connection.prepareStatement(sql);
+		
+		System.out.println("Inserting new record into WRProjectInfo table...");
+		
+		/*1@Background VARCHAR(max)='',       */
+		/*2@BranchId INT=1,                   */
+		/*3@ContinentID INT=1,                */
+		/*4@ContractNumber VARCHAR(255)='',   */
+		/*5@DirWR INT=1,                      */
+		/*6@FundSourceID INT=1,               */
+		/*7@FundSourceText VARCHAR(255)='fun',*/ pstmt.setString(17, "FundSourceText");
+		/*8@InstallationID INT=1,             */
+		/*9@LocationID INT=1,                 */
+		/*10@MilitarySiteID INT=1,             */
+		/*11@OrgCode VARCHAR(255)='org',       */
+		/*12@ProgramYear VARCHAR(255)='2021',  */ pstmt.setString(12, "2021 ProgramYear");
+		/*13@ProjectName VARCHAR(255)='name',  */ pstmt.setString(13, "ProjectName");
+		/*14@ProjectNotes Varchar(max)='notes',*/
+		/*15@ProjectNumber VARCHAR(255)='1',   */ pstmt.setString(15, "ProjectNumber - 1");
+		/*16@PulseCityRegionID INT=2,          */
+		/*17@PulseCountryID INT =2,            */
+		/*18@SectionId INT =1,                 */
+		/*19@Site VARCHAR(255)='site',         */
+		/*20@WRID INT=2,                       */
+		/*21@TYPE_ACTION VARCHAR(25)='select'  */
+		pstmt.executeUpdate();
+		
+		pstmt.close();
+		sqlConnectionClose();
+		
+	}
+	
+	//Send Work Request to sql server using prepared statment
+	public void sendWRtoSQLPreparedStatment(SortedMap<String, Object> sendMap) throws SQLException
+	{
+		if(connection.isClosed())
+			sqlConnectionOpen();
+		
+		String sql = "INSERT INTO WRWorkRequest(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		PreparedStatement pstmt = connection.prepareStatement(sql);
+		
+		System.out.println("Inserting new record into WRWorkRequest table...");
+		
+		/*1@TYPE_ACTION VARCHAR(25)='select ',   */ 
+		/*2@ID INT = 2,                          */ 
+		/*3@AverageRate DECIMAL =1.1,            */ 
+		/*4@BranchAssignmentID INT =2,           */ 
+		/*5@BranchID INT =2 ,                    */ 
+		/*6@CompletionDate DATETIME2='',         */ pstmt.setTimestamp(3, Timestamp.valueOf(sendMap.get("CompletionDate").toString()));
+		/*7@DatePrepared DATETIME2='',           */ pstmt.setString(7, sendMap.get("DatePrepared").toString());
+		/*8@DraftDueDate DATETIME='',            */ pstmt.setString(8, sendMap.get("DraftDueDate").toString());
+		/*9@FinancialInfoID INT =2,              */
+		/*10@FY INT =2021,                        */
+		/*11@ProjectInfoID INT = 2,               */
+		/*12@ProjectManager VARCHAR(255)='PM',    */ pstmt.setString(8, sendMap.get("ProjectManager").toString());
+		/*13@ProjectPulseID INT =2,               */
+		/*14@Requestor VARCHAR(255) ='me',        */ pstmt.setString(17, sendMap.get("Requestor").toString());
+		/*15@StartDate DATETIME2='',              */ pstmt.setTimestamp(15, Timestamp.valueOf(sendMap.get("StartDate").toString()));
+		/*16@SubmissionDate DATETIME2='',         */ 
+		/*17@Supervisor VARCHAR(255)='superivsor',*/ pstmt.setString(17, sendMap.get("Supervisor").toString());
+		/*18@WRNumber VARCHAR(255)='wrnum',       */ pstmt.setString(18, sendMap.get("WRNumber").toString());
+		/*19@WRStatusID INT=2                     */ pstmt.setInt(19, (int) sendMap.get("WRStatusID"));
+		pstmt.execute();
+		
+		
+		sql = "INSERT INTO WRProjectInfo";
+		pstmt = connection.prepareStatement(sql);
+		
+		System.out.println("Inserting new record into WRProjectInfo table...");
+		
+		/*1@Background VARCHAR(max)='',       */
+		/*2@BranchId INT=1,                   */
+		/*3@ContinentID INT=1,                */
+		/*4@ContractNumber VARCHAR(255)='',   */
+		/*5@DirWR INT=1,                      */
+		/*6@FundSourceID INT=1,               */
+		/*7@FundSourceText VARCHAR(255)='fun',*/ pstmt.setString(17, sendMap.get("FundSourceText").toString());
+		/*8@InstallationID INT=1,             */
+		/*9@LocationID INT=1,                 */
+		/*10@MilitarySiteID INT=1,             */
+		/*11@OrgCode VARCHAR(255)='org',       */
+		/*12@ProgramYear VARCHAR(255)='2021',  */ pstmt.setString(12, sendMap.get("ProgramYear").toString());
+		/*13@ProjectName VARCHAR(255)='name',  */ pstmt.setString(13, sendMap.get("ProjectName").toString());
+		/*14@ProjectNotes Varchar(max)='notes',*/
+		/*15@ProjectNumber VARCHAR(255)='1',   */ pstmt.setInt(15, (int) sendMap.get("ProjectNumber"));
+		/*16@PulseCityRegionID INT=2,          */
+		/*17@PulseCountryID INT =2,            */
+		/*18@SectionId INT =1,                 */
+		/*19@Site VARCHAR(255)='site',         */
+		/*20@WRID INT=2,                       */
+		/*21@TYPE_ACTION VARCHAR(25)='select'  */
+		pstmt.execute();
+		
+		pstmt.close();
+		sqlConnectionClose();
+		
+	}
+	
+	//create a SQL connection to localhost
+	public static Connection sqlConnectionOpen()
+	{
+		//default values for server login
+		String localurl = "jdbc:sqlserver://localhost;databaseName=Pulse;";
+		String localuser = "sa";
+		String localpassword = "1234567890";
+		
+		//if there is login info use that instead of default
+		if(loginInfo != null && !loginInfo.isEmpty())
+		{
+			String[] sArray = loginInfo.split(";");
+			localurl = sArray[0] + ';' + sArray[1] + ';';
+			localuser = sArray[2];
+			localpassword = sArray[3];
+		}
+		
+		//try to connection
+		try 
+		{
+			System.out.println("Attempting to connect to: " + localurl);
+			connection = DriverManager.getConnection(localurl, localuser, localpassword);
+			System.out.println("Connect to MS SQL Server on Local Host. Good Job Dude.");
+		} 
+		catch (SQLException e) 
+		{
+			System.out.println("Oops, there's an error connecting to the LocalHost");
+			e.printStackTrace();
+		}
+		
+		//return connection status
+		return connection;
+				
+	}
+	
+	//Close sql connection
+	public static void sqlConnectionClose()
+	{
+		try 
+		{
+			connection.close();
+		} catch (SQLException e) {
+			System.out.println("SQL Connection Failed to Close!");
+			e.printStackTrace();
+		}
+	}
+
+	//get data from the sql server and put in internal data structure
+	public static ArrayList<Map<String, Object>> getDataFromSQL(Connection con) throws SQLException 
+	{
+		//if no active connection, open one
+		if(con.isClosed())
+			con = sqlConnectionOpen();
+		
+		//set connection to newly opened con
+		if(connection != con)
+			connection = con;
+		
+		ArrayList<Map<String, Object>> paramArrayListMap = null;
+		
+		String query = "select * from [dbo].[WRWorkRequest]";
+		String query2 = "select * from [dbo].[WRProjectInfo]";
+		
+		ResultSet rs;
+		ResultSet rs2;
+		CallableStatement cstmt;
+
+		System.out.println("Calling uspWRWorkRequest_ISUD Select...");
+		cstmt = con.prepareCall(query); 
+    	rs = cstmt.executeQuery();
+    	System.out.println("uspWRWorkRequest_ISUD Complete...");
+    	
+    	System.out.println("Calling uspWRProjectInfo_ISUD Select...");
+    	cstmt = con.prepareCall(query2);
+    	rs2 = cstmt.executeQuery();
+    	System.out.println("uspWRProjectInfo_ISUD Complete...");
+
+        paramArrayListMap = new ArrayList<Map<String, Object>>();
+        while(rs.next() && rs2.next())
+        {
+            SortedMap<String,Object> paramMap = new TreeMap<String,Object>();
+            
+            //Get data from WRWorkRequest
+    		paramMap.put("AverageRate", rs.getDouble("AverageRate"));
+    		paramMap.put("BranchAssignmentID", rs.getInt("BranchAssignmentID"));
+    		paramMap.put("BranchID", rs.getInt("BranchID"));
+    		paramMap.put("CompletionDate", rs.getTimestamp("CompletionDate"));
+    		paramMap.put("DatePrepared", rs.getTimestamp("DatePrepared"));
+    		paramMap.put("DraftDueDate", rs.getTimestamp("DraftDueDate"));
+    		paramMap.put("FinancialInfoID", rs.getInt("FinancialInfoID"));
+    		paramMap.put("FY", rs.getInt("FY"));
+    		paramMap.put("ID", rs.getInt("ID"));
+    		paramMap.put("ProjectInfoID", rs.getInt("ProjectInfoID"));
+    		paramMap.put("ProjectManager", rs.getString("ProjectManager"));
+    		paramMap.put("ProjectPulseID", rs.getInt("ProjectPulseID"));
+    		paramMap.put("Requestor", rs.getString("Requestor"));
+    		paramMap.put("StartDate", rs.getTimestamp("StartDate"));
+    		paramMap.put("SubmissionDate", rs.getTimestamp("SubmissionDate"));
+    		paramMap.put("Supervisor", rs.getString("Supervisor"));
+    		paramMap.put("WRNumber", rs.getString("WRNumber"));
+    		paramMap.put("WRStatusID", rs.getInt("WRStatusID"));
+    		
+    		//Get data from WRProjectInfo
+        	paramMap.put("Background", rs2.getString("Background"));
+        	paramMap.put("BranchId", rs2.getInt("BranchId"));
+        	paramMap.put("ContinentID", rs2.getInt("ContinentID"));
+        	paramMap.put("ContractNumber", rs2.getString("ContractNumber"));
+        	paramMap.put("DirWR", rs2.getInt("DirWR"));
+        	paramMap.put("FundSourceID", rs2.getInt("FundSourceID"));
+        	paramMap.put("FundSourceText", rs2.getString("FundSourceText"));
+        	paramMap.put("InstallationID", rs2.getInt("InstallationID"));
+        	paramMap.put("LocationID", rs2.getInt("LocationID"));
+        	paramMap.put("MilitarySiteID", rs2.getInt("MilitarySiteID"));
+        	paramMap.put("OrgCode", rs2.getString("OrgCode"));
+        	paramMap.put("ProgramYear", rs2.getString("ProgramYear"));
+        	paramMap.put("ProjectName", rs2.getString("ProjectName"));
+        	paramMap.put("ProjectNotes", rs2.getString("ProjectNotes"));
+        	paramMap.put("ProjectNumber", rs2.getInt("ProjectNumber"));
+        	paramMap.put("PulseCityRegionID", rs2.getInt("PulseCityRegionID"));
+        	paramMap.put("PulseCountryID", rs2.getInt("PulseCountryID"));
+        	paramMap.put("SectionId", rs2.getInt("SectionId"));
+        	paramMap.put("Site", rs2.getString("Site"));
+        	paramMap.put("WRID", rs2.getInt("WRID"));
+        	
+        	//Generates cost distribution fields for analysis graph data
+        	paramMap.putAll(generateCostDistFields());
+        	
+        	//Add paramMap to the arraylist for each record
+    		paramArrayListMap.add(paramMap);
+    		paramMap.forEach((key, value) -> System.out.println(key + ": " + value));
+    		System.out.println("ArrayListSize: " + paramArrayListMap.size());
+        }
+        
+        //close connection
+        rs.close();
+        rs2.close();
+        cstmt.close();
+        sqlConnectionClose();
+        
+	    return paramArrayListMap;
+	}
+	
+	//Generates random values for cost distribution fields
+	public static Map<String,Object> generateCostDistFields()
+	{
+		SortedMap<String,Object> costMap = new TreeMap<String,Object>();
+		
+		costMap.put("costCivil", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costArchitectural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costStructural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costForceProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costMechanical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costFireProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costElectrical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costCommunications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costLEED", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costEnvironmental", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costCostEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costGeotechnical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costAEContracting", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costValueEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costTranslator", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costSpecifications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costOther", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		
+		costMap.put("costHoursCivil", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursArchitectural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursStructural", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursForceProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursMechanical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursFireProtection", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursElectrical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursCommunications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursLEED", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursEnvironmental", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursCostEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursGeotechnical", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursAEContracting", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursValueEngineer", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursTranslator", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursSpecifications", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		costMap.put("costHoursOther", (Math.floor(Math.random() * (100) + 1) * 100) / 100);
+		
+		return costMap;
+	}
+	
 }
