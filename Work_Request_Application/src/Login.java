@@ -108,7 +108,7 @@ public class Login extends JFrame implements ActionListener
 		{
 			if(sqlConnectionOpen(connectionType))//If able to connect to sql database
 			{
-				String loginInfo = url + databaseName + ';' + user + ';' + password;
+				String loginInfo = url + databaseName + user + ';' + password;
 				MainWindow window = new MainWindow(loginInfo, connectionType, connection);
 				window.frmWorkRequestApplication.setVisible(true);
 				setVisible(false);
@@ -149,7 +149,7 @@ public class Login extends JFrame implements ActionListener
 			break;
 			
 		case 1:	//Azure Server
-			url ="jdbc:sqlserver://cmsc495team03.eastus.cloudapp.azure.com;";
+			url ="jdbc:sqlserver://cmsc495team03final.eastus.cloudapp.azure.com;";
 			user = userNameTextField.getText();
 			password = passwordTextField.getText();
 			databaseName = "databaseName=Pulse;";
