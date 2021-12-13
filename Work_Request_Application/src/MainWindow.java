@@ -630,15 +630,7 @@ public class MainWindow extends SQLHandler
         gbc_horizontalStrut_4.gridy = 2;
         remarkSavePane.add(horizontalStrut_4, gbc_horizontalStrut_4);
         
-        saveRequestBtn = new JButton("Save");
-        saveRequestBtn.addActionListener(workRequestAction);
-        GridBagConstraints gbc_saveRequestBtn = new GridBagConstraints();
-        gbc_saveRequestBtn.insets = new Insets(0, 0, 5, 5);
-        gbc_saveRequestBtn.gridx = 2;
-        gbc_saveRequestBtn.gridy = 3;
-        remarkSavePane.add(saveRequestBtn, gbc_saveRequestBtn);
-        
-        submitWorkRequestBtn = new JButton("Submit to PA");
+        submitWorkRequestBtn = new JButton("Submit");
         submitWorkRequestBtn.addActionListener(workRequestAction);
         GridBagConstraints gbc_submitWorkRequestBtn = new GridBagConstraints();
         gbc_submitWorkRequestBtn.insets = new Insets(0, 0, 5, 5);
@@ -2676,7 +2668,7 @@ public class MainWindow extends SQLHandler
 			if(e.getSource() == submitWorkRequestBtn)
 			{
 				try {
-					
+					System.out.println("Saving to sendMap...");
 					saveWRtoMap(); 			//save the data before sending
 					//sendWRtoSQLPreparedStatmentTest();
 					sendWRtoSQLPreparedStatment(sendMap);	//send the data to the 
@@ -2684,11 +2676,6 @@ public class MainWindow extends SQLHandler
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			}
-			if(e.getSource() == saveRequestBtn)
-			{
-				System.out.println("Saving to sendMap...");
-				saveWRtoMap();
 			}
 		}
 	};
@@ -2750,7 +2737,6 @@ public class MainWindow extends SQLHandler
 	private JTextField dateAddedTextField;
 	private JTextField userTextField;
 	private JTextArea notesTextField;
-	private JButton saveRequestBtn;
 	private JButton submitWorkRequestBtn;
 	private JTextArea wrRemarkTextArea;
 	private Component verticalStrut_6;
