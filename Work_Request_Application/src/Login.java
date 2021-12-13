@@ -280,6 +280,7 @@ public class Login extends JFrame implements ActionListener
 		signinOptions.add(sqlAzureRadioBtn);
 		
 		sqlLocalRadioBtn = new JRadioButton("Local Sql Connection");
+		sqlLocalRadioBtn.setEnabled(false);
 		sqlLocalRadioBtn.addActionListener(this);
 		sqlLocalRadioBtn.setSelected(true);
 		GridBagConstraints gbc_sqlLocalRadioBtn = new GridBagConstraints();
@@ -291,6 +292,7 @@ public class Login extends JFrame implements ActionListener
 		signinOptions.add(sqlLocalRadioBtn);
 		
 		sqlServerRadioBtn = new JRadioButton("SQL Server Connection");
+		sqlServerRadioBtn.setEnabled(false);
 		sqlServerRadioBtn.addActionListener(this);
 		GridBagConstraints gbc_sqlServerRadioBtn = new GridBagConstraints();
 		gbc_sqlServerRadioBtn.gridwidth = 2;
