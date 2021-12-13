@@ -68,7 +68,8 @@ public class MainWindow extends SQLHandler
 	public static int selectedRow;
 	static ChartPanel pieChartPanel;
 	Vector<WRStatusIDItem> wrStatusIDVector;
-
+	public static int wrid;
+	public static int projectInfoID;
 
 	//Launch the application.
 	public static void main(String[] args) 
@@ -107,6 +108,10 @@ public class MainWindow extends SQLHandler
 		sendMap = new TreeMap<String, Object>();
 		wrStatusIDVector = new Vector<WRStatusIDItem>();
 		
+		//bandaid numbers
+		wrid = 0;
+		projectInfoID = 0;
+		
 		//setup vector for use in WRStatusID ComboBox
 		wrStatusIDVector.addElement(new WRStatusIDItem("Not submitted", 1));
 		wrStatusIDVector.addElement(new WRStatusIDItem("Assigned to PA", 2));
@@ -143,6 +148,22 @@ public class MainWindow extends SQLHandler
 	//save data in field to internal data structure
 	public boolean saveWRtoMap()
 	{
+		int tempWRID = (int) workRequests.get(workRequests.size()-1).get("WRID") + 1;
+		int tempProjectInfoID = (int) workRequests.get(workRequests.size()-1).get("ProjectInfoID") + 1;
+		
+		//check if the bandaid numbers are incrementing correctly for the server
+		if(wrid <= tempWRID)
+			wrid = tempWRID;
+		else
+			++wrid;
+		
+		//check if the bandaid numbers are incrementing correctly for the server
+		if(projectInfoID <= tempProjectInfoID)
+			projectInfoID = tempProjectInfoID;
+		else
+			++projectInfoID;
+				
+		//ProjectInfoID
 		boolean saved = false;
 		
 		sendMap.put("WRNumber", newWRNumTextField.getText());
@@ -158,8 +179,8 @@ public class MainWindow extends SQLHandler
 		sendMap.put("FundSourceText",newFundSourceTextField.getValue());
 		sendMap.put("StartDate",newStartDateTextField.getText());
 		sendMap.put("CompletionDate",newCompletionDateTextField.getText());
-		sendMap.put("WRID", (int) workRequests.get(workRequests.size()-1).get("WRID") + 1);
-		sendMap.put("ProjectInfoID", (int) workRequests.get(workRequests.size()-1).get("ProjectInfoID") + 1);
+		sendMap.put("WRID", wrid);
+		sendMap.put("ProjectInfoID", projectInfoID);
 		
 		if(sendMap.get("WRNumber") == newWRNumTextField.getText())
 		{
@@ -651,8 +672,8 @@ public class MainWindow extends SQLHandler
         GridBagLayout gbl_generalInfoPane = new GridBagLayout();
         gbl_generalInfoPane.columnWidths = new int[]{0, 0, 0, 243, 0, 0, 0};
         gbl_generalInfoPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        gbl_generalInfoPane.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-        gbl_generalInfoPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_generalInfoPane.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
+        gbl_generalInfoPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         generalInfoPane.setLayout(gbl_generalInfoPane);
         
         verticalStrut = Box.createVerticalStrut(20);
@@ -685,6 +706,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newWRNumberLabel, gbc_newWRNumberLabel);
         
         newWRNumTextField = new JTextField();
+        newWRNumTextField.setText("1234");
         GridBagConstraints gbc_newWRNumTextField = new GridBagConstraints();
         gbc_newWRNumTextField.gridwidth = 2;
         gbc_newWRNumTextField.insets = new Insets(0, 0, 5, 5);
@@ -703,6 +725,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(lblWorkRequestStatus, gbc_lblWorkRequestStatus);
         
         newWRStatusComboBox = new JComboBox(wrStatusIDVector);
+        newWRStatusComboBox.setSelectedIndex(3);
         GridBagConstraints gbc_newWRStatusComboBox = new GridBagConstraints();
         gbc_newWRStatusComboBox.gridwidth = 2;
         gbc_newWRStatusComboBox.insets = new Insets(0, 0, 5, 5);
@@ -720,7 +743,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newDatePreparedLabel, gbc_newDatePreparedLabel);
         
         newDatePrepTextField = new JTextField();
-        newDatePrepTextField.setText("yyyy-mm-dd hh:mm:ss");
+        newDatePrepTextField.setText("2021-01-14 09:00:01");
         newDatePrepTextField.setColumns(10);
         GridBagConstraints gbc_newDatePrepTextField = new GridBagConstraints();
         gbc_newDatePrepTextField.gridwidth = 2;
@@ -739,7 +762,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newDraftDueDateLabel, gbc_newDraftDueDateLabel);
         
         newDraftDueDateTextField = new JTextField();
-        newDraftDueDateTextField.setText("yyyy-mm-dd hh:mm:ss");
+        newDraftDueDateTextField.setText("2021-01-14 09:00:02");
         newDraftDueDateTextField.setColumns(10);
         GridBagConstraints gbc_newDraftDueDateTextField = new GridBagConstraints();
         gbc_newDraftDueDateTextField.gridwidth = 2;
@@ -758,6 +781,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(lblRequester, gbc_lblRequester);
         
         newRequesterTextField = new JTextField();
+        newRequesterTextField.setText("Terry");
         newRequesterTextField.setColumns(10);
         GridBagConstraints gbc_newRequesterTextField = new GridBagConstraints();
         gbc_newRequesterTextField.gridwidth = 2;
@@ -776,6 +800,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(lblProjectManager, gbc_lblProjectManager);
         
         newProjectManagerTextField = new JTextField();
+        newProjectManagerTextField.setText("Dave");
         newProjectManagerTextField.setColumns(10);
         GridBagConstraints gbc_newProjectManagerTextField = new GridBagConstraints();
         gbc_newProjectManagerTextField.gridwidth = 2;
@@ -794,6 +819,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newSupervisorLabel, gbc_newSupervisorLabel);
         
         newSupervisorTextField = new JTextField();
+        newSupervisorTextField.setText("Will");
         newSupervisorTextField.setColumns(10);
         GridBagConstraints gbc_newSupervisorTextField = new GridBagConstraints();
         gbc_newSupervisorTextField.gridwidth = 2;
@@ -813,11 +839,12 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newProjectNameLabel, gbc_newProjectNameLabel);
         
         newProjectNameTextField = new JTextField();
+        newProjectNameTextField.setText("Work Request Application");
         newProjectNameTextField.setColumns(10);
         GridBagConstraints gbc_newProjectNameTextField = new GridBagConstraints();
         gbc_newProjectNameTextField.gridwidth = 2;
         gbc_newProjectNameTextField.insets = new Insets(0, 0, 5, 5);
-        gbc_newProjectNameTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_newProjectNameTextField.fill = GridBagConstraints.BOTH;
         gbc_newProjectNameTextField.gridx = 3;
         gbc_newProjectNameTextField.gridy = 8;
         generalInfoPane.add(newProjectNameTextField, gbc_newProjectNameTextField);
@@ -850,7 +877,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newProgramYearLabel, gbc_newProgramYearLabel);
         
         newProgramYearTextField = new JTextField();
-        newProgramYearTextField.setText("yyyy");
+        newProgramYearTextField.setText("2022");
         newProgramYearTextField.setColumns(10);
         GridBagConstraints gbc_newProgramYearTextField = new GridBagConstraints();
         gbc_newProgramYearTextField.gridwidth = 2;
@@ -887,7 +914,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newStartDateLabel, gbc_newStartDateLabel);
         
         newStartDateTextField = new JTextField();
-        newStartDateTextField.setText("yyyy-mm-dd hh:mm:ss");
+        newStartDateTextField.setText("2021-01-14 09:00:03");
         newStartDateTextField.setColumns(10);
         GridBagConstraints gbc_newStartDateTextField = new GridBagConstraints();
         gbc_newStartDateTextField.gridwidth = 2;
@@ -906,7 +933,7 @@ public class MainWindow extends SQLHandler
         generalInfoPane.add(newCompletionDateLabel, gbc_newCompletionDateLabel);
         
         newCompletionDateTextField = new JTextField();
-        newCompletionDateTextField.setText("yyyy-mm-dd hh:mm:ss");
+        newCompletionDateTextField.setText("2021-01-14 09:00:04");
         newCompletionDateTextField.setColumns(10);
         GridBagConstraints gbc_newCompletionDateTextField = new GridBagConstraints();
         gbc_newCompletionDateTextField.gridwidth = 2;
@@ -916,57 +943,6 @@ public class MainWindow extends SQLHandler
         gbc_newCompletionDateTextField.gridy = 13;
         generalInfoPane.add(newCompletionDateTextField, gbc_newCompletionDateTextField);
         
-        lblNewLabel_3 = new JLabel("Date Added");
-        lblNewLabel_3.setForeground(Color.DARK_GRAY);
-        lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNewLabel_3.setBackground(new Color(176, 224, 230));
-        GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-        gbc_lblNewLabel_3.fill = GridBagConstraints.HORIZONTAL;
-        gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-        gbc_lblNewLabel_3.gridx = 2;
-        gbc_lblNewLabel_3.gridy = 14;
-        generalInfoPane.add(lblNewLabel_3, gbc_lblNewLabel_3);
-        
-        lblNewLabel_4 = new JLabel("User");
-        lblNewLabel_4.setForeground(Color.DARK_GRAY);
-        lblNewLabel_4.setBackground(new Color(176, 224, 230));
-        lblNewLabel_4.setHorizontalAlignment(SwingConstants.CENTER);
-        GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
-        gbc_lblNewLabel_4.fill = GridBagConstraints.HORIZONTAL;
-        gbc_lblNewLabel_4.insets = new Insets(0, 0, 5, 5);
-        gbc_lblNewLabel_4.gridx = 3;
-        gbc_lblNewLabel_4.gridy = 14;
-        generalInfoPane.add(lblNewLabel_4, gbc_lblNewLabel_4);
-        
-        lblNewLabel_5 = new JLabel("Remark/Note");
-        lblNewLabel_5.setForeground(Color.DARK_GRAY);
-        lblNewLabel_5.setBackground(new Color(176, 224, 230));
-        lblNewLabel_5.setHorizontalAlignment(SwingConstants.CENTER);
-        GridBagConstraints gbc_lblNewLabel_5 = new GridBagConstraints();
-        gbc_lblNewLabel_5.fill = GridBagConstraints.HORIZONTAL;
-        gbc_lblNewLabel_5.insets = new Insets(0, 0, 5, 5);
-        gbc_lblNewLabel_5.gridx = 4;
-        gbc_lblNewLabel_5.gridy = 14;
-        generalInfoPane.add(lblNewLabel_5, gbc_lblNewLabel_5);
-        
-        dateAddedTextField = new JTextField();
-        GridBagConstraints gbc_dateAddedTextField = new GridBagConstraints();
-        gbc_dateAddedTextField.insets = new Insets(0, 0, 0, 5);
-        gbc_dateAddedTextField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_dateAddedTextField.gridx = 2;
-        gbc_dateAddedTextField.gridy = 15;
-        generalInfoPane.add(dateAddedTextField, gbc_dateAddedTextField);
-        dateAddedTextField.setColumns(10);
-        
-        userTextField = new JTextField();
-        GridBagConstraints gbc_userTextField = new GridBagConstraints();
-        gbc_userTextField.insets = new Insets(0, 0, 0, 5);
-        gbc_userTextField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_userTextField.gridx = 3;
-        gbc_userTextField.gridy = 15;
-        generalInfoPane.add(userTextField, gbc_userTextField);
-        userTextField.setColumns(10);
-        
         scrollPane_1 = new JScrollPane();
         GridBagConstraints gbc_scrollPane_1 = new GridBagConstraints();
         gbc_scrollPane_1.fill = GridBagConstraints.BOTH;
@@ -974,10 +950,6 @@ public class MainWindow extends SQLHandler
         gbc_scrollPane_1.gridx = 4;
         gbc_scrollPane_1.gridy = 15;
         generalInfoPane.add(scrollPane_1, gbc_scrollPane_1);
-        
-        notesTextField = new JTextArea();
-        scrollPane_1.setViewportView(notesTextField);
-        notesTextField.setColumns(10);
         //end new Work Requests
 	}
 	
@@ -2115,12 +2087,6 @@ public class MainWindow extends SQLHandler
 	private JTextField newProjectManagerTextField;
 	private JComboBox<WRStatusIDItem> newWRStatusComboBox;
 	private Component horizontalStrut_1;
-	private JLabel lblNewLabel_3;
-	private JLabel lblNewLabel_4;
-	private JLabel lblNewLabel_5;
-	private JTextField dateAddedTextField;
-	private JTextField userTextField;
-	private JTextArea notesTextField;
 	private JButton submitWorkRequestBtn;
 	private JTextArea wrRemarkTextArea;
 	private Component verticalStrut_6;
