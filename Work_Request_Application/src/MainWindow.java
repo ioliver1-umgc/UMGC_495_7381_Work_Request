@@ -61,7 +61,7 @@ import javax.swing.ImageIcon;
 
 public class MainWindow extends SQLHandler
 {
-	public JFrame frmWorkRequestApplication;
+	public static JFrame frmWorkRequestApplication;
 	public static ArrayList<Map<String, Object>> workRequests;
 	public SortedMap<String, Object> sendMap;
 	public static int selectedRow;
@@ -78,7 +78,7 @@ public class MainWindow extends SQLHandler
 				try 
 				{
 					MainWindow window = new MainWindow();
-					window.frmWorkRequestApplication.setVisible(true);
+					MainWindow.frmWorkRequestApplication.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -119,7 +119,7 @@ public class MainWindow extends SQLHandler
 		//create/update selection table
 		makeSelectionTable();
 		
-		fillGUI(0);
+		fillGUI(selectedRow);
 	}
 	
 	
@@ -141,6 +141,8 @@ public class MainWindow extends SQLHandler
 		sendMap.put("FundSourceText",newFundSourceTextField.getValue());
 		sendMap.put("StartDate",newStartDateTextField.getText());
 		sendMap.put("CompletionDate",newCompletionDateTextField.getText());
+		sendMap.put("WRID", (int) workRequests.get(workRequests.size()-1).get("WRID") + 1);
+		sendMap.put("ProjectInfoID", (int) workRequests.get(workRequests.size()-1).get("ProjectInfoID") + 1);
 		
 		if(sendMap.get("WRNumber") == newWRNumTextField.getText())
 		{
@@ -288,7 +290,7 @@ public class MainWindow extends SQLHandler
 	private void fillGUI(int index)
 	{
 		//check if index is valid, if not default to 0
-		if(index < 0 || index < workRequests.size() || index > workRequests.size())
+		if(index < 0 || index > workRequests.size())
 			index = 0;
 		
 		//Fill General Info
@@ -353,7 +355,10 @@ public class MainWindow extends SQLHandler
 		generatePieChartJPEG();
 		generateGnattChartJPEG();
 		
-		frmWorkRequestApplication.repaint();
+		//System.out.println("Index::" + index + "WRNum::-" + viewWRNumTextField.getText() + "What it should be: " + checkData(workRequests.get(index).get("WRNumber")).toString());
+		MainWindow.frmWorkRequestApplication.invalidate();
+		MainWindow.frmWorkRequestApplication.validate();
+		MainWindow.frmWorkRequestApplication.repaint();
 		return;
 	}
 
@@ -1981,7 +1986,11 @@ public class MainWindow extends SQLHandler
 				}
                 
                 selectedRow = workRequestsSelectionTable.getSelectedRow();
+                System.out.println("row selection changed to: "+ selectedRow);
                 fillGUI(selectedRow);
+                frmWorkRequestApplication.invalidate();
+                frmWorkRequestApplication.validate();
+                frmWorkRequestApplication.repaint();
             }
         });
         scrollPane_7.setViewportView(workRequestsSelectionTable);
@@ -2638,10 +2647,9 @@ public class MainWindow extends SQLHandler
 			{
 				try {
 					
-					//saveWRtoMap(); 			//save the data before sending
-					sendWRtoSQLPreparedStatmentTest();
-					//sendWRtoSQLTable(sendMap);
-					//sendWRtoSQLPreparedStatment(sendMap);	//send the data to the 
+					saveWRtoMap(); 			//save the data before sending
+					//sendWRtoSQLPreparedStatmentTest();
+					sendWRtoSQLPreparedStatment(sendMap);	//send the data to the 
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -3101,13 +3109,13 @@ class SQLHandler
 		/*16@SubmissionDate DATETIME2='',         */ 
 		/*17@Supervisor VARCHAR(255)='superivsor',*/ pstmt.setString(8, "Supervisor");
 		/*18@WRNumber VARCHAR(255)='wrnum',       */ pstmt.setString(9, "WRNumber");
-		/*19@WRStatusID INT=2                     */ pstmt.setInt(10, 13);
+		/*19@WRStatusID INT=2                     */ pstmt.setInt(10, 5);
 		pstmt.executeUpdate();
 		
 		
 		sql = "INSERT INTO WRProjectInfo "
-		+ "(FundSourceText, ProgramYear, ProjectName, ProjectNumber) "
-		+ "VALUES (?,?,?,?)";
+		+ "(DirWR, FundSourceText, ProgramYear, ProjectName, ProjectNumber, WRID) "
+		+ "VALUES (?,?,?,?,?,?)";
 		pstmt = connection.prepareStatement(sql);
 		
 		System.out.println("Inserting new record into WRProjectInfo table...");
@@ -3116,22 +3124,22 @@ class SQLHandler
 		/*2@BranchId INT=1,                   */
 		/*3@ContinentID INT=1,                */
 		/*4@ContractNumber VARCHAR(255)='',   */
-		/*5@DirWR INT=1,                      */
+		/*5@DirWR INT=1,                      */ pstmt.setInt(1, 1);
 		/*6@FundSourceID INT=1,               */
-		/*7@FundSourceText VARCHAR(255)='fun',*/ pstmt.setString(17, "FundSourceText");
+		/*7@FundSourceText VARCHAR(255)='fun',*/ pstmt.setString(2, "FundSourceText");
 		/*8@InstallationID INT=1,             */
 		/*9@LocationID INT=1,                 */
 		/*10@MilitarySiteID INT=1,             */
 		/*11@OrgCode VARCHAR(255)='org',       */
-		/*12@ProgramYear VARCHAR(255)='2021',  */ pstmt.setString(12, "2021 ProgramYear");
-		/*13@ProjectName VARCHAR(255)='name',  */ pstmt.setString(13, "ProjectName");
+		/*12@ProgramYear VARCHAR(255)='2021',  */ pstmt.setString(3, "2021 ProgramYear");
+		/*13@ProjectName VARCHAR(255)='name',  */ pstmt.setString(4, "ProjectName");
 		/*14@ProjectNotes Varchar(max)='notes',*/
-		/*15@ProjectNumber VARCHAR(255)='1',   */ pstmt.setString(15, "ProjectNumber - 1");
+		/*15@ProjectNumber VARCHAR(255)='1',   */ pstmt.setString(5, "ProjectNumber - 1");
 		/*16@PulseCityRegionID INT=2,          */
 		/*17@PulseCountryID INT =2,            */
 		/*18@SectionId INT =1,                 */
 		/*19@Site VARCHAR(255)='site',         */
-		/*20@WRID INT=2,                       */
+		/*20@WRID INT=2,                       */ pstmt.setInt(6, 3);
 		/*21@TYPE_ACTION VARCHAR(25)='select'  */
 		pstmt.executeUpdate();
 		
@@ -3146,7 +3154,9 @@ class SQLHandler
 		if(connection.isClosed())
 			sqlConnectionOpen();
 		
-		String sql = "INSERT INTO WRWorkRequest(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "INSERT INTO WRWorkRequest "
+				+ "(CompletionDate, DatePrepared, DraftDueDate, ProjectInfoID, ProjectManager, Requestor, StartDate, Supervisor, WRNumber, WRSTatusID) "
+				+ "VALUES (?,?,?,?,?,?,?,?,?,?)";
 		PreparedStatement pstmt = connection.prepareStatement(sql);
 		
 		System.out.println("Inserting new record into WRWorkRequest table...");
@@ -3155,25 +3165,27 @@ class SQLHandler
 		/*2@ID INT = 2,                          */ 
 		/*3@AverageRate DECIMAL =1.1,            */ 
 		/*4@BranchAssignmentID INT =2,           */ 
-		/*5@BranchID INT =2 ,                    */ 
-		/*6@CompletionDate DATETIME2='',         */ pstmt.setTimestamp(3, Timestamp.valueOf(sendMap.get("CompletionDate").toString()));
-		/*7@DatePrepared DATETIME2='',           */ pstmt.setString(7, sendMap.get("DatePrepared").toString());
-		/*8@DraftDueDate DATETIME='',            */ pstmt.setString(8, sendMap.get("DraftDueDate").toString());
+		/*5@BranchID INT =2 ,                    */ System.out.println("CompletionDate :: " + sendMap.get("CompletionDate").toString());
+		/*6@CompletionDate DATETIME2='',         */ pstmt.setTimestamp(1, Timestamp.valueOf(sendMap.get("CompletionDate").toString()));
+		/*7@DatePrepared DATETIME2='',           */ pstmt.setTimestamp(2, Timestamp.valueOf(sendMap.get("DatePrepared").toString()));
+		/*8@DraftDueDate DATETIME='',            */ pstmt.setTimestamp(3, Timestamp.valueOf(sendMap.get("DraftDueDate").toString()));
 		/*9@FinancialInfoID INT =2,              */
 		/*10@FY INT =2021,                        */
-		/*11@ProjectInfoID INT = 2,               */
-		/*12@ProjectManager VARCHAR(255)='PM',    */ pstmt.setString(8, sendMap.get("ProjectManager").toString());
+		/*11@ProjectInfoID INT = 2,               */ pstmt.setInt(4, (int) sendMap.get("ProjectInfoID"));
+		/*12@ProjectManager VARCHAR(255)='PM',    */ pstmt.setString(5, sendMap.get("ProjectManager").toString());
 		/*13@ProjectPulseID INT =2,               */
-		/*14@Requestor VARCHAR(255) ='me',        */ pstmt.setString(17, sendMap.get("Requestor").toString());
-		/*15@StartDate DATETIME2='',              */ pstmt.setTimestamp(15, Timestamp.valueOf(sendMap.get("StartDate").toString()));
+		/*14@Requestor VARCHAR(255) ='me',        */ pstmt.setString(6, sendMap.get("Requestor").toString());
+		/*15@StartDate DATETIME2='',              */ pstmt.setTimestamp(7, Timestamp.valueOf(sendMap.get("StartDate").toString()));
 		/*16@SubmissionDate DATETIME2='',         */ 
-		/*17@Supervisor VARCHAR(255)='superivsor',*/ pstmt.setString(17, sendMap.get("Supervisor").toString());
-		/*18@WRNumber VARCHAR(255)='wrnum',       */ pstmt.setString(18, sendMap.get("WRNumber").toString());
-		/*19@WRStatusID INT=2                     */ pstmt.setInt(19, (int) sendMap.get("WRStatusID"));
+		/*17@Supervisor VARCHAR(255)='superivsor',*/ pstmt.setString(8, sendMap.get("Supervisor").toString());
+		/*18@WRNumber VARCHAR(255)='wrnum',       */ pstmt.setString(9, sendMap.get("WRNumber").toString());
+		/*19@WRStatusID INT=2                     */ pstmt.setInt(10, (int) sendMap.get("WRStatusID"));
 		pstmt.execute();
 		
 		
-		sql = "INSERT INTO WRProjectInfo";
+		sql = "INSERT INTO WRProjectInfo "
+		+ "(DirWR, FundSourceText, ProgramYear, ProjectName, ProjectNumber, WRID) "
+		+ "VALUES (?,?,?,?,?,?)";
 		pstmt = connection.prepareStatement(sql);
 		
 		System.out.println("Inserting new record into WRProjectInfo table...");
@@ -3182,22 +3194,22 @@ class SQLHandler
 		/*2@BranchId INT=1,                   */
 		/*3@ContinentID INT=1,                */
 		/*4@ContractNumber VARCHAR(255)='',   */
-		/*5@DirWR INT=1,                      */
+		/*5@DirWR INT=1,                      */ pstmt.setInt(1, 1);
 		/*6@FundSourceID INT=1,               */
-		/*7@FundSourceText VARCHAR(255)='fun',*/ pstmt.setString(17, sendMap.get("FundSourceText").toString());
+		/*7@FundSourceText VARCHAR(255)='fun',*/ pstmt.setString(2, sendMap.get("FundSourceText").toString());
 		/*8@InstallationID INT=1,             */
 		/*9@LocationID INT=1,                 */
 		/*10@MilitarySiteID INT=1,             */
 		/*11@OrgCode VARCHAR(255)='org',       */
-		/*12@ProgramYear VARCHAR(255)='2021',  */ pstmt.setString(12, sendMap.get("ProgramYear").toString());
-		/*13@ProjectName VARCHAR(255)='name',  */ pstmt.setString(13, sendMap.get("ProjectName").toString());
+		/*12@ProgramYear VARCHAR(255)='2021',  */ pstmt.setString(3, sendMap.get("ProgramYear").toString());
+		/*13@ProjectName VARCHAR(255)='name',  */ pstmt.setString(4, sendMap.get("ProjectName").toString());
 		/*14@ProjectNotes Varchar(max)='notes',*/
-		/*15@ProjectNumber VARCHAR(255)='1',   */ pstmt.setInt(15, (int) sendMap.get("ProjectNumber"));
+		/*15@ProjectNumber VARCHAR(255)='1',   */ pstmt.setInt(5, (int) sendMap.get("ProjectNumber"));
 		/*16@PulseCityRegionID INT=2,          */
 		/*17@PulseCountryID INT =2,            */
 		/*18@SectionId INT =1,                 */
 		/*19@Site VARCHAR(255)='site',         */
-		/*20@WRID INT=2,                       */
+		/*20@WRID INT=2,                       */ pstmt.setInt(6, (int) sendMap.get("WRID"));
 		/*21@TYPE_ACTION VARCHAR(25)='select'  */
 		pstmt.execute();
 		
@@ -3323,7 +3335,7 @@ class SQLHandler
         	paramMap.put("ProgramYear", rs2.getString("ProgramYear"));
         	paramMap.put("ProjectName", rs2.getString("ProjectName"));
         	paramMap.put("ProjectNotes", rs2.getString("ProjectNotes"));
-        	paramMap.put("ProjectNumber", rs2.getInt("ProjectNumber"));
+        	paramMap.put("ProjectNumber", rs2.getString("ProjectNumber"));
         	paramMap.put("PulseCityRegionID", rs2.getInt("PulseCityRegionID"));
         	paramMap.put("PulseCountryID", rs2.getInt("PulseCountryID"));
         	paramMap.put("SectionId", rs2.getInt("SectionId"));
@@ -3335,8 +3347,8 @@ class SQLHandler
         	
         	//Add paramMap to the arraylist for each record
     		paramArrayListMap.add(paramMap);
-    		paramMap.forEach((key, value) -> System.out.println(key + ": " + value));
-    		System.out.println("ArrayListSize: " + paramArrayListMap.size());
+    		//paramMap.forEach((key, value) -> System.out.println(key + ": " + value));
+    		//System.out.println("ArrayListSize: " + paramArrayListMap.size());
         }
         
         //close connection
