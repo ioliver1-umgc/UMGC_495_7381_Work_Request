@@ -58,6 +58,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 
 public class MainWindow extends SQLHandler
 {
@@ -66,7 +67,8 @@ public class MainWindow extends SQLHandler
 	public SortedMap<String, Object> sendMap;
 	public static int selectedRow;
 	static ChartPanel pieChartPanel;
-	
+	Vector<WRStatusIDItem> wrStatusIDVector;
+
 
 	//Launch the application.
 	public static void main(String[] args) 
@@ -103,6 +105,20 @@ public class MainWindow extends SQLHandler
 		//Generate internal data structure
 		workRequests = new ArrayList<Map<String, Object>>();
 		sendMap = new TreeMap<String, Object>();
+		wrStatusIDVector = new Vector<WRStatusIDItem>();
+		
+		//setup vector for use in WRStatusID ComboBox
+		wrStatusIDVector.addElement(new WRStatusIDItem("Not submitted", 1));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Assigned to PA", 2));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Pending PM Submission", 3));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Assigned to ECES", 4));
+		wrStatusIDVector.addElement(new WRStatusIDItem("In Progress", 5));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Pending ECES Technical Completion", 6));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Returned to Requester", 7));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Closed", 8));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Pending PM Completion", 9));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Pending ECES Financial Completion", 10));
+		wrStatusIDVector.addElement(new WRStatusIDItem("Marked Deleted", 11));
 		
 		//create the GUI
 		createGui();
@@ -119,6 +135,7 @@ public class MainWindow extends SQLHandler
 		//create/update selection table
 		makeSelectionTable();
 		
+		//fillout GUI from record
 		fillGUI(selectedRow);
 	}
 	
@@ -129,7 +146,7 @@ public class MainWindow extends SQLHandler
 		boolean saved = false;
 		
 		sendMap.put("WRNumber", newWRNumTextField.getText());
-		sendMap.put("WRStatusID",newWRStatusSpinner.getValue());
+		sendMap.put("WRStatusID", ((WRStatusIDItem) newWRStatusComboBox.getSelectedItem()).getInt());
 		sendMap.put("DatePrepared",newDatePrepTextField.getText());
 		sendMap.put("DraftDueDate",newDraftDueDateTextField.getText());
 		sendMap.put("Requestor",newRequesterTextField.getText());
@@ -295,7 +312,6 @@ public class MainWindow extends SQLHandler
 		
 		//Fill General Info
 		viewWRNumTextField.setText(checkData(workRequests.get(index).get("WRNumber")).toString());
-		viewWRStatusTextField.setText(checkData(workRequests.get(index).get("WRStatusID")).toString());
 		viewDatePrepTextField.setText(checkData(workRequests.get(index).get("DatePrepared")).toString());
 		viewDraftDueDateTextField.setText(checkData(workRequests.get(index).get("DraftDueDate")).toString());
 		viewRequesterTextField.setText(checkData(workRequests.get(index).get("Requestor")).toString());
@@ -694,14 +710,14 @@ public class MainWindow extends SQLHandler
         gbc_lblWorkRequestStatus.gridy = 2;
         generalInfoPane.add(lblWorkRequestStatus, gbc_lblWorkRequestStatus);
         
-        newWRStatusSpinner = new JSpinner();
-        GridBagConstraints gbc_newWRStatusSpinner = new GridBagConstraints();
-        gbc_newWRStatusSpinner.gridwidth = 2;
-        gbc_newWRStatusSpinner.insets = new Insets(0, 0, 5, 5);
-        gbc_newWRStatusSpinner.fill = GridBagConstraints.HORIZONTAL;
-        gbc_newWRStatusSpinner.gridx = 3;
-        gbc_newWRStatusSpinner.gridy = 2;
-        generalInfoPane.add(newWRStatusSpinner, gbc_newWRStatusSpinner);
+        newWRStatusComboBox = new JComboBox(wrStatusIDVector);
+        GridBagConstraints gbc_newWRStatusComboBox = new GridBagConstraints();
+        gbc_newWRStatusComboBox.gridwidth = 2;
+        gbc_newWRStatusComboBox.insets = new Insets(0, 0, 5, 5);
+        gbc_newWRStatusComboBox.fill = GridBagConstraints.HORIZONTAL;
+        gbc_newWRStatusComboBox.gridx = 3;
+        gbc_newWRStatusComboBox.gridy = 2;
+        generalInfoPane.add(newWRStatusComboBox, gbc_newWRStatusComboBox);
         
         newDatePreparedLabel = new JLabel("Date Prepared");
         GridBagConstraints gbc_newDatePreparedLabel = new GridBagConstraints();
@@ -1639,6 +1655,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewWorkRequestNumLabel, gbc_viewWorkRequestNumLabel);
         
         viewWRNumTextField = new JTextField();
+        viewWRNumTextField.setEditable(false);
         GridBagConstraints gbc_viewWRNumTextField = new GridBagConstraints();
         gbc_viewWRNumTextField.gridwidth = 2;
         gbc_viewWRNumTextField.insets = new Insets(0, 0, 5, 5);
@@ -1657,15 +1674,14 @@ public class MainWindow extends SQLHandler
         gbc_viewWRStatusLabel.gridy = 2;
         viewGeneralInfoPane.add(viewWRStatusLabel, gbc_viewWRStatusLabel);
         
-        viewWRStatusTextField = new JTextField();
-        viewWRStatusTextField.setColumns(10);
-        GridBagConstraints gbc_viewWRStatusTextField = new GridBagConstraints();
-        gbc_viewWRStatusTextField.gridwidth = 2;
-        gbc_viewWRStatusTextField.insets = new Insets(0, 0, 5, 5);
-        gbc_viewWRStatusTextField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_viewWRStatusTextField.gridx = 3;
-        gbc_viewWRStatusTextField.gridy = 2;
-        viewGeneralInfoPane.add(viewWRStatusTextField, gbc_viewWRStatusTextField);
+        viewWRStatusComboBox = new JComboBox(wrStatusIDVector);
+        GridBagConstraints gbc_viewWRStatusComboBox = new GridBagConstraints();
+        gbc_viewWRStatusComboBox.gridwidth = 2;
+        gbc_viewWRStatusComboBox.insets = new Insets(0, 0, 5, 5);
+        gbc_viewWRStatusComboBox.fill = GridBagConstraints.HORIZONTAL;
+        gbc_viewWRStatusComboBox.gridx = 3;
+        gbc_viewWRStatusComboBox.gridy = 2;
+        viewGeneralInfoPane.add(viewWRStatusComboBox, gbc_viewWRStatusComboBox);
         
         viewWRDatePreppedLabel = new JLabel("Date Prepared");
         viewWRDatePreppedLabel.setHorizontalAlignment(SwingConstants.TRAILING);
@@ -1677,6 +1693,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewWRDatePreppedLabel, gbc_viewWRDatePreppedLabel);
         
         viewDatePrepTextField = new JTextField();
+        viewDatePrepTextField.setEditable(false);
         viewDatePrepTextField.setColumns(10);
         GridBagConstraints gbc_viewDatePrepTextField = new GridBagConstraints();
         gbc_viewDatePrepTextField.gridwidth = 2;
@@ -1696,6 +1713,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewDraftDueDateLabel, gbc_viewDraftDueDateLabel);
         
         viewDraftDueDateTextField = new JTextField();
+        viewDraftDueDateTextField.setEditable(false);
         viewDraftDueDateTextField.setText((String) null);
         viewDraftDueDateTextField.setColumns(10);
         GridBagConstraints gbc_viewDraftDueDateTextField = new GridBagConstraints();
@@ -1716,6 +1734,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewRequesterLabel, gbc_viewRequesterLabel);
         
         viewRequesterTextField = new JTextField();
+        viewRequesterTextField.setEditable(false);
         viewRequesterTextField.setColumns(10);
         GridBagConstraints gbc_viewRequesterTextField = new GridBagConstraints();
         gbc_viewRequesterTextField.gridwidth = 2;
@@ -1735,6 +1754,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewProjectManagerLabel, gbc_viewProjectManagerLabel);
         
         viewProjectManagerTextField = new JTextField();
+        viewProjectManagerTextField.setEditable(false);
         viewProjectManagerTextField.setColumns(10);
         GridBagConstraints gbc_viewviewProjectManagerTextField = new GridBagConstraints();
         gbc_viewviewProjectManagerTextField.gridwidth = 2;
@@ -1754,6 +1774,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewSupervisorLabel, gbc_viewSupervisorLabel);
         
         viewSupervisorTextField = new JTextField();
+        viewSupervisorTextField.setEditable(false);
         viewSupervisorTextField.setColumns(10);
         GridBagConstraints gbc_viewSupervisorTextField = new GridBagConstraints();
         gbc_viewSupervisorTextField.gridwidth = 2;
@@ -1773,6 +1794,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewProjectNameLabel, gbc_viewProjectNameLabel);
         
         viewProjectNameTextField = new JTextField();
+        viewProjectNameTextField.setEditable(false);
         viewProjectNameTextField.setColumns(10);
         GridBagConstraints gbc_viewProjectNameTextField = new GridBagConstraints();
         gbc_viewProjectNameTextField.gridwidth = 2;
@@ -1792,6 +1814,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewProjectNumberLabel, gbc_viewProjectNumberLabel);
         
         viewProjectNumberTextField = new JTextField();
+        viewProjectNumberTextField.setEditable(false);
         viewProjectNumberTextField.setColumns(10);
         GridBagConstraints gbc_viewProjectNumberTextField = new GridBagConstraints();
         gbc_viewProjectNumberTextField.gridwidth = 2;
@@ -1811,6 +1834,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewProgramYearLabel, gbc_viewProgramYearLabel);
         
         viewProgramYearTextField = new JTextField();
+        viewProgramYearTextField.setEditable(false);
         viewProgramYearTextField.setColumns(10);
         GridBagConstraints gbc_viewProgramYearTextField = new GridBagConstraints();
         gbc_viewProgramYearTextField.gridwidth = 2;
@@ -1830,6 +1854,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewFundSourceTextLabel, gbc_viewFundSourceTextLabel);
         
         viewFundSourceTextField = new JTextField();
+        viewFundSourceTextField.setEditable(false);
         viewFundSourceTextField.setColumns(10);
         GridBagConstraints gbc_viewFundSourceTextField = new GridBagConstraints();
         gbc_viewFundSourceTextField.gridwidth = 2;
@@ -1849,6 +1874,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewStartDateLabel, gbc_viewStartDateLabel);
         
         viewStartDateTextField = new JTextField();
+        viewStartDateTextField.setEditable(false);
         viewStartDateTextField.setColumns(10);
         GridBagConstraints gbc_viewStartDateTextField = new GridBagConstraints();
         gbc_viewStartDateTextField.gridwidth = 2;
@@ -1868,6 +1894,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewCompletionDateLabel, gbc_viewCompletionDateLabel);
         
         viewCompletionDateTextField = new JTextField();
+        viewCompletionDateTextField.setEditable(false);
         viewCompletionDateTextField.setColumns(10);
         GridBagConstraints gbc_viewCompletionDateTextField = new GridBagConstraints();
         gbc_viewCompletionDateTextField.gridwidth = 2;
@@ -1911,6 +1938,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewRemarksLabel, gbc_viewRemarksLabel);
         
         viewDateAddedTextField = new JTextField();
+        viewDateAddedTextField.setEditable(false);
         GridBagConstraints gbc_viewDateAddedTextField = new GridBagConstraints();
         gbc_viewDateAddedTextField.insets = new Insets(0, 0, 0, 5);
         gbc_viewDateAddedTextField.fill = GridBagConstraints.HORIZONTAL;
@@ -1920,6 +1948,7 @@ public class MainWindow extends SQLHandler
         viewDateAddedTextField.setColumns(10);
         
         viewUserTextField = new JTextField();
+        viewUserTextField.setEditable(false);
         GridBagConstraints gbc_viewUserTextField = new GridBagConstraints();
         gbc_viewUserTextField.insets = new Insets(0, 0, 0, 5);
         gbc_viewUserTextField.fill = GridBagConstraints.HORIZONTAL;
@@ -1937,6 +1966,7 @@ public class MainWindow extends SQLHandler
         viewGeneralInfoPane.add(viewNotesScollPane, gbc_viewNotesScollPane);
         
         viewNotesTextField = new JTextArea();
+        viewNotesTextField.setEditable(false);
         viewNotesScollPane.setViewportView(viewNotesTextField);
         viewNotesTextField.setColumns(10);
         
@@ -2662,6 +2692,8 @@ public class MainWindow extends SQLHandler
 			}
 		}
 	};
+		
+
 	
 	private JTabbedPane gernalTabbedPane;
 
@@ -2681,7 +2713,7 @@ public class MainWindow extends SQLHandler
 	private JLabel viewProjectManagerLabel;
 	private JTextField viewProjectManagerTextField;
 	private JLabel viewWRStatusLabel;
-	private JTextField viewWRStatusTextField;
+	private JComboBox<WRStatusIDItem> viewWRStatusComboBox;
 	private JLabel viewDateAddedLabel;
 	private JLabel viewUserLabel;
 	private JLabel viewRemarksLabel;
@@ -2710,7 +2742,7 @@ public class MainWindow extends SQLHandler
 	private JTextField newDatePrepTextField;
 	private JTextField newRequesterTextField;
 	private JTextField newProjectManagerTextField;
-	private JSpinner newWRStatusSpinner;
+	private JComboBox<WRStatusIDItem> newWRStatusComboBox;
 	private Component horizontalStrut_1;
 	private JLabel lblNewLabel_3;
 	private JLabel lblNewLabel_4;
@@ -2932,13 +2964,29 @@ public class MainWindow extends SQLHandler
 	private JSpinner newProjectNumberSpinner;
 	private JTextField newProgramYearTextField;
 	private JSpinner newFundSourceTextField;
-	private JLabel pieChart;
-	private JLabel lblNewLabel;
-	private JButton pieChartButton;
 	private JLabel pieChartLabel;
 	private JLabel gnattChartLabel;
 }
 
+//Class for filling the WRStatusID Combo boxes and returning int values
+class WRStatusIDItem
+{
+	private String string;
+	private int num;
+
+	WRStatusIDItem(String s, int i) 
+	{
+		this.string = s;
+		this.num = i;
+	} 
+	
+	@Override
+	public String toString() { return string; }
+	public String getDescription() { return string; }
+	public int getInt()	{ return num; }
+}
+
+//Class for handling all of the SQL
 class SQLHandler
 {
 	public static Connection connection;
