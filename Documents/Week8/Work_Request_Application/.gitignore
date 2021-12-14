@@ -1,0 +1,16 @@
+################## Eclipse ######################
+target
+.metadata
+.settings
+.classpath
+.project
+*.class
+tmp/
+*.tmp
+*.bak
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+/bin/
